@@ -33,6 +33,22 @@ public final class Resident implements Cell
 		this.colorBehavior = colorBehavior;
 	}
 
+	public void setTtlBehavior(TTLBehavior ttlBehavior) {
+		this.ttlBehavior = ttlBehavior;
+	}
+
+	public void setEffectBehavior(EffectBehavior effectBehavior) {
+		this.effectBehavior = effectBehavior;
+	}
+
+	public void setNextBehavior(NextBehavior nextBehavior) {
+		this.nextBehavior = nextBehavior;
+	}
+
+	public void setColorBehavior(ColorBehavior colorBehavior) {
+		this.colorBehavior = colorBehavior;
+	}
+
 	private boolean isStable(){return amAlive == willBeAlive; }
 
 	/** figure the next state.
