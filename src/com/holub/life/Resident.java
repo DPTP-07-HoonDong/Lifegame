@@ -1,14 +1,10 @@
 package com.holub.life;
 
 import java.awt.*;
-import javax.swing.*;
+
 import com.holub.ui.Colors;	// Contains constants specifying various
 							// colors not defined in java.awt.Color.
-import com.holub.life.Cell;
-import com.holub.life.Storable;
-import com.holub.life.Direction;
-import com.holub.life.Neighborhood;
-import com.holub.life.Universe;
+
 
 /*** ****************************************************************
  * The Resident class implements a single cell---a "resident" of a
@@ -20,7 +16,6 @@ import com.holub.life.Universe;
 public final class Resident implements Cell
 {
 	private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
-	private static final Color LIVE_COLOR 	= Color.RED;
 	private static final Color DEAD_COLOR   = Colors.LIGHT_YELLOW;
 
 	private boolean amAlive 	= false;
@@ -28,13 +23,13 @@ public final class Resident implements Cell
 
 	TTLBehavior ttlBehavior;
 	EffectBehavior effectBehavior;
-	RuleBehavior ruleBehavior;
+	NextBehavior nextBehavior;
 	ColorBehavior colorBehavior;
 
-	Resident(TTLBehavior ttlBehavior, EffectBehavior effectBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
+	Resident(TTLBehavior ttlBehavior, EffectBehavior effectBehavior, NextBehavior nextBehavior, ColorBehavior colorBehavior) {
 		this.ttlBehavior = ttlBehavior;
 		this.effectBehavior = effectBehavior;
-		this.ruleBehavior = ruleBehavior;
+		this.nextBehavior = nextBehavior;
 		this.colorBehavior = colorBehavior;
 	}
 
@@ -97,7 +92,7 @@ public final class Resident implements Cell
 
 	public void redraw(Graphics g, Rectangle here, boolean drawAll)
     {   g = g.create();
-		g.setColor(amAlive ? LIVE_COLOR : DEAD_COLOR );
+		g.setColor(amAlive ? colorBehavior.setLiveColor() : DEAD_COLOR );
 		g.fillRect(here.x+1, here.y+1, here.width-1, here.height-1);
 
 		// Doesn't draw a line on the far right and bottom of the
@@ -116,7 +111,7 @@ public final class Resident implements Cell
 
 	public void	   clear()			{amAlive = willBeAlive = false; }
 	public boolean isAlive()		{return amAlive;			    }
-	public Cell    create()			{return new Resident(ttlBehavior, effectBehavior, ruleBehavior, colorBehavior);			}
+	public Cell    create()			{return new Resident(ttlBehavior, effectBehavior, nextBehavior, colorBehavior);			}
 	public int 	   widthInCells()	{return 1;}
 
 	public Direction isDisruptiveTo()
