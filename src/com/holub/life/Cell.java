@@ -29,7 +29,7 @@ public interface Cell
 	 *  				the block.
 	 *  @param column	The requested column. Must be on the edge
 	 *  				of the block.
-	 *  @return	true	if the the state changed.
+	 *  @return	true	if the state changed.
 	 */
 	Cell edge( int row, int column );
 
