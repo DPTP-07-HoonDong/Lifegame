@@ -68,8 +68,7 @@ public final class Resident implements Cell {
 
     private void verify(Cell c, String direction) {
         assert (c instanceof Resident) || (c == Cell.DUMMY)
-                : "incorrect type for " + direction + ": " +
-                c.getClass().getName();
+                : "incorrect type for " + direction + ": " + c.getClass().getName();
     }
 
     /**
@@ -146,7 +145,6 @@ public final class Resident implements Cell {
      * exception if anybody tries to do it here.
      */
     public Storable createMemento() {
-        throw new UnsupportedOperationException(
-                "May not create memento of a unitary cell");
+        throw new UnsupportedOperationException("May not create memento of a unitary cell");
     }
 }

@@ -151,11 +151,7 @@ public class Publisher {
             }
 
             public void fire(final String arg) {
-                publisher.publish(new Publisher.Distributor() {
-                    public void deliverTo(Object subscriber) {
-                        ((Observer) subscriber).notify(arg);
-                    }
-                });
+                publisher.publish(subscriber -> ((Observer) subscriber).notify(arg));
             }
         }
 

@@ -485,7 +485,7 @@ public final class Neighborhood implements Cell {
      */
 
     private static class NeighborhoodState implements Cell.Memento {
-        Collection liveCells = new LinkedList();
+        Collection<Point> liveCells = new LinkedList<>();
 
         public NeighborhoodState(InputStream in) throws IOException {
             load(in);
@@ -497,7 +497,7 @@ public final class Neighborhood implements Cell {
         public void load(InputStream in) throws IOException {
             try {
                 ObjectInputStream source = new ObjectInputStream(in);
-                liveCells = (Collection) (source.readObject());
+                liveCells = (Collection<Point>) source.readObject();
             } catch (ClassNotFoundException e) {    // This exception shouldn't be rethrown as
                 // a ClassNotFoundException because the
                 // outside world shouldn't know (or care) that we're
@@ -526,8 +526,8 @@ public final class Neighborhood implements Cell {
             StringBuffer b = new StringBuffer();
 
             b.append("NeighborhoodState:\n");
-            for (Iterator i = liveCells.iterator(); i.hasNext(); ) {
-                b.append(((Point) i.next()).toString() + "\n");
+            for (Point liveCell : liveCells) {
+                b.append(liveCell.toString() + "\n");
             }
             return b.toString();
         }

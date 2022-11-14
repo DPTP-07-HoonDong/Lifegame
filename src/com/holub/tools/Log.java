@@ -41,6 +41,7 @@ public class Log {
         Handler h = new ConsoleHandler();
         h.setLevel(Level.ALL);
         h.setFormatter(new Formatter() {
+            @Override
             public String format(LogRecord r) {
                 return r.getMessage() + "\n";
             }
