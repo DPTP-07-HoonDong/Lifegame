@@ -26,6 +26,18 @@ public final class Resident implements Cell
 	private boolean amAlive 	= false;
 	private boolean willBeAlive	= false;
 
+	TTLBehavior ttlBehavior;
+	EffectBehavior effectBehavior;
+	RuleBehavior ruleBehavior;
+	ColorBehavior colorBehavior;
+
+	Resident(TTLBehavior ttlBehavior, EffectBehavior effectBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
+		this.ttlBehavior = ttlBehavior;
+		this.effectBehavior = effectBehavior;
+		this.ruleBehavior = ruleBehavior;
+		this.colorBehavior = colorBehavior;
+	}
+
 	private boolean isStable(){return amAlive == willBeAlive; }
 
 	/** figure the next state.
@@ -104,7 +116,7 @@ public final class Resident implements Cell
 
 	public void	   clear()			{amAlive = willBeAlive = false; }
 	public boolean isAlive()		{return amAlive;			    }
-	public Cell    create()			{return new Resident();			}
+	public Cell    create()			{return new Resident(ttlBehavior, effectBehavior, ruleBehavior, colorBehavior);			}
 	public int 	   widthInCells()	{return 1;}
 
 	public Direction isDisruptiveTo()
