@@ -26,6 +26,18 @@ public final class Resident implements Cell {
     private boolean amAlive = false;
     private boolean willBeAlive = false;
 
+	TTLBehavior ttlBehavior;
+	EffectBehavior effectBehavior;
+	RuleBehavior ruleBehavior;
+	ColorBehavior colorBehavior;
+
+	Resident(TTLBehavior ttlBehavior, EffectBehavior effectBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
+		this.ttlBehavior = ttlBehavior;
+		this.effectBehavior = effectBehavior;
+		this.ruleBehavior = ruleBehavior;
+		this.colorBehavior = colorBehavior;
+	}
+
     private boolean isStable() {
         return amAlive == willBeAlive;
     }
@@ -125,7 +137,7 @@ public final class Resident implements Cell {
     }
 
     public Cell create() {
-        return new Resident();
+        return new Resident(ttlBehavior, effectBehavior, ruleBehavior, colorBehavior);
     }
 
     public int widthInCells() {
