@@ -89,7 +89,8 @@ public class Universe extends JPanel {
         setOpaque(true);
 
         addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) { //{=Universe.mouse}
+            @Override
+            public void mousePressed(MouseEvent e) {//{=Universe.mouse}
                 Rectangle bounds = getBounds();
                 bounds.x = 0;
                 bounds.y = 0;
@@ -99,59 +100,26 @@ public class Universe extends JPanel {
         });
 
         MenuSite.addLine(
-                this,
-                "Grid",
-                "Clear",
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        outermostCell.clear();
-                        repaint();
-                    }
+                this, "Grid", "Clear",
+                e -> {
+                    outermostCell.clear();
+                    repaint();
                 }
         );
 
-        MenuSite.addLine( // {=Universe.load.setup}
-                this,
-                "Grid",
-                "Load",
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        doLoad();
-                    }
-                }
-        );
+        MenuSite.addLine(this, "Grid", "Load", e -> doLoad()); // {=Universe.load.setup}
 
-        MenuSite.addLine(
-                this,
-                "Grid",
-                "Store",
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        doStore();
-                    }
-                }
-        );
+        MenuSite.addLine(this, "Grid", "Store", e -> doStore());
 
-        MenuSite.addLine(
-                this,
-                "Grid",
-                "Exit",
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        System.exit(0);
-                    }
-                }
-        );
+        MenuSite.addLine(this, "Grid", "Exit", e -> System.exit(0));
 
-        Clock.instance().addClockListener(new Clock.Listener() { //{=Universe.clock.subscribe}
-            public void tick() {
-                if (outermostCell.figureNextState(
-                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
-                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY
-                )) {
-                    if (outermostCell.transition()) {
-                        refreshNow();
-                    }
+        Clock.instance().addClockListener(() -> { //{=Universe.clock.subscribe}
+            if (outermostCell.figureNextState(
+                    Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                    Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY
+            )) {
+                if (outermostCell.transition()) {
+                    refreshNow();
                 }
             }
         });
@@ -243,20 +211,18 @@ public class Universe extends JPanel {
      */
 
     private void refreshNow() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Graphics g = getGraphics();
-                if (g == null) {       // Universe not displayable
-                    return;
-                }
-                try {
-                    Rectangle panelBounds = getBounds();
-                    panelBounds.x = 0;
-                    panelBounds.y = 0;
-                    outermostCell.redraw(g, panelBounds, false); //{=Universe.redraw2}
-                } finally {
-                    g.dispose();
-                }
+        SwingUtilities.invokeLater(() -> {
+            Graphics g = getGraphics();
+            if (g == null) {       // Universe not displayable
+                return;
+            }
+            try {
+                Rectangle panelBounds = getBounds();
+                panelBounds.x = 0;
+                panelBounds.y = 0;
+                outermostCell.redraw(g, panelBounds, false); //{=Universe.redraw2}
+            } finally {
+                g.dispose();
             }
         });
     }

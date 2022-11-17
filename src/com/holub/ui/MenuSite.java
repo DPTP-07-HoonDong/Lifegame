@@ -1010,21 +1010,15 @@ public final class MenuSite {
 
             // Create a generic reporter.
 
-            ActionListener reportIt = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    JMenuItem item = (JMenuItem) (e.getSource());
-                    System.out.println(item.getText());
-                }
+            ActionListener reportIt = e -> {
+                JMenuItem item = (JMenuItem) (e.getSource());
+                System.out.println(item.getText());
             };
 
 
             // Create the File menu first.
 
-            ActionListener terminator = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
-                }
-            };
+            ActionListener terminator = e -> System.exit(0);
 
             // Make the file menu with it's own ID so that the removal
             // test in the main menu doesn't remove it.
@@ -1037,19 +1031,16 @@ public final class MenuSite {
             // Now, make a few more menus.
 
             MenuSite.addMenu(instance, "Main");
-            MenuSite.addLine(instance, "Main", "Add Line Item to Menu",
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            MenuSite.addLine(instance, "Main",
-                                    "Remove Main and Help menus",
-                                    new ActionListener() {
-                                        public void actionPerformed(ActionEvent e) {
-                                            MenuSite.removeMyMenus(instance);
-                                        }
-                                    }
-                            );
-                        }
-                    }
+            MenuSite.addLine(
+                    instance, "Main", "Add Line Item to Menu",
+                    e -> MenuSite.addLine(instance, "Main",
+                            "Remove Main and Help menus",
+                            new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    MenuSite.removeMyMenus(instance);
+                                }
+                            }
+                    )
             );
 
             //---------------------------------------------------------
@@ -1057,19 +1048,17 @@ public final class MenuSite {
             //---------------------------------------------------------
             final Object disable1 = new Object();
 
-            MenuSite.addLine(instance, "Main", "Toggle1",
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            isDisabled1 = !isDisabled1;
-                            MenuSite.setEnable(disable1, !isDisabled1);
-                            MenuSite.getMyMenuItem(instance,
-                                            "Main", "Toggle1").
-                                    setText
-                                            (isDisabled1 ? "Enable following Item"
-                                                    : "Disable following Item"
-                                            );
+            MenuSite.addLine(
+                    instance, "Main", "Toggle1",
+                    e -> {
+                        isDisabled1 = !isDisabled1;
+                        MenuSite.setEnable(disable1, !isDisabled1);
+                        MenuSite.getMyMenuItem(instance, "Main", "Toggle1")
+                                .setText(isDisabled1
+                                        ? "Enable following Item"
+                                        : "Disable following Item"
+                                );
 
-                        }
                     }
             );
             MenuSite.getMyMenuItem(instance, "Main", "Toggle1")
@@ -1080,17 +1069,16 @@ public final class MenuSite {
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             final Object disable2 = new Object();
 
-            MenuSite.addLine(instance, "Main", "Toggle2",
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            isDisabled2 = !isDisabled2;
-                            MenuSite.setEnable(disable2, !isDisabled2);
-                            MenuSite.getMyMenuItem(instance, "Main", "Toggle2")
-                                    .setText(isDisabled2
-                                            ? "Enable following Item"
-                                            : "Disable following Item"
-                                    );
-                        }
+            MenuSite.addLine(
+                    instance, "Main", "Toggle2",
+                    e -> {
+                        isDisabled2 = !isDisabled2;
+                        MenuSite.setEnable(disable2, !isDisabled2);
+                        MenuSite.getMyMenuItem(instance, "Main", "Toggle2")
+                                .setText(isDisabled2
+                                        ? "Enable following Item"
+                                        : "Disable following Item"
+                                );
                     }
             );
             MenuSite.getMyMenuItem(instance, "Main", "Toggle2")
@@ -1104,13 +1092,7 @@ public final class MenuSite {
             final Object id = new Object();
 
             MenuSite.addLine(id, "Main", "-", null);
-            MenuSite.addLine(id, "Main", "Remove this item & separator line",
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            MenuSite.removeMyMenus(id);
-                        }
-                    }
-            );
+            MenuSite.addLine(id, "Main", "Remove this item & separator line", e -> MenuSite.removeMyMenus(id));
 
             // Check out submenus. Create two of them, one in two
             // steps and the other in a single step. Then add items
@@ -1158,14 +1140,7 @@ public final class MenuSite {
             // it's inserted in the right place.
 
             final Object x = new Object();
-            MenuSite.addLine(
-                    x, "Removal", "Select to Remove Removal menu",
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            MenuSite.removeMyMenus(x);
-                        }
-                    }
-            );
+            MenuSite.addLine(x, "Removal", "Select to Remove Removal menu", e -> MenuSite.removeMyMenus(x));
         }
     }
 }
