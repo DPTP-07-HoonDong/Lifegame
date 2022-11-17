@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import com.holub.ui.MenuSite;
+import com.holub.ui.PopupSite;
 
 /*******************************************************************
  * An implemenation of Conway's Game of Life.
@@ -25,6 +26,7 @@ public final class Life extends JFrame {
         // Must establish the MenuSite very early in case
         // a subcomponent puts menus on it.
         MenuSite.establish(this);        //{=life.java.establish}
+        PopupSite.establish(this);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
