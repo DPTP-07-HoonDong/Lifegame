@@ -34,7 +34,8 @@ public class ConditionVariable {
     }
 
     public synchronized void set(boolean how) {
-        if ((isTrue = how) == true) {
+        isTrue = how;
+        if (isTrue) {
             notifyAll();
         }
     }
