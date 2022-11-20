@@ -99,18 +99,18 @@ public class Universe extends JPanel {
         });
 
         MenuSite.addLine(
-                this, "Grid", "Clear",
+                this, false, "Grid", "Clear",
                 e -> {
                     outermostCell.clear();
                     repaint();
                 }
         );
 
-        MenuSite.addLine(this, "Grid", "Load", e -> doLoad()); // {=Universe.load.setup}
+        MenuSite.addLine(this, false, "Grid", "Load", e -> doLoad()); // {=Universe.load.setup}
 
-        MenuSite.addLine(this, "Grid", "Store", e -> doStore());
+        MenuSite.addLine(this, false, "Grid", "Store", e -> doStore());
 
-        MenuSite.addLine(this, "Grid", "Exit", e -> System.exit(0));
+        MenuSite.addLine(this, false, "Grid", "Exit", e -> System.exit(0));
 
         Clock.instance().addClockListener(() -> { //{=Universe.clock.subscribe}
             if (outermostCell.figureNextState(
