@@ -9,8 +9,8 @@ import com.holub.life.Storable;
  * It's implemented both by {@link Resident} (which represents
  * an individual cell on the board) and {@link Neighborhood},
  * which represents a group of cells.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public interface Cell {

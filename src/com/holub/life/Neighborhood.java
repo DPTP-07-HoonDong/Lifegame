@@ -1,19 +1,13 @@
 package com.holub.life;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import java.io.*;
-import javax.swing.*;
 
-import com.holub.io.Files;
-import com.holub.life.Cell;
-import com.holub.ui.MenuSite;
 import com.holub.ui.Colors;
 import com.holub.asynch.ConditionVariable;
 
 import com.holub.life.Cell;
-import com.holub.life.Clock;
 import com.holub.life.Direction;
 import com.holub.life.Storable;
 
@@ -29,8 +23,8 @@ import com.holub.life.Storable;
  * the active edges in transistion() rather then figureNextState().
  * The original call is commented out and the new line is marked 
  * with "(1)"
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public final class Neighborhood implements Cell {

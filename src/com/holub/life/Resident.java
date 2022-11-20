@@ -1,21 +1,18 @@
 package com.holub.life;
 
 import java.awt.*;
-import javax.swing.*;
 
 import com.holub.ui.Colors;    // Contains constants specifying various
 // colors not defined in java.awt.Color.
 import com.holub.life.Cell;
 import com.holub.life.Storable;
 import com.holub.life.Direction;
-import com.holub.life.Neighborhood;
-import com.holub.life.Universe;
 
 /*** ****************************************************************
  * The Resident class implements a single cell---a "resident" of a
  * block.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public final class Resident implements Cell {
@@ -129,14 +126,11 @@ public final class Resident implements Cell {
     public boolean transfer(Storable blob, Point upperLeft, boolean doLoad) {
         Memento memento = (Memento) blob;
         if (doLoad) {
-            if (amAlive = willBeAlive = memento.isAlive(upperLeft)) {
-                return true;
-            }
+            amAlive = willBeAlive = memento.isAlive(upperLeft);
+            return true;
         } else if (amAlive) {                   // store only live cells
             memento.markAsAlive(upperLeft);
         }
-
-
         return false;
     }
 

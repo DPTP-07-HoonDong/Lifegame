@@ -5,8 +5,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter; // disambiguate from java.io version
 
 /*** A utility that handles various File-related operations.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public class Files {

@@ -59,8 +59,8 @@ import java.util.NoSuchElementException;
  * by defining a Listener interface, and then also defining
  * the message passing symantics (inside the Distributor implementation),
  * you have complete control over what the notification interface looks like.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public class Publisher {

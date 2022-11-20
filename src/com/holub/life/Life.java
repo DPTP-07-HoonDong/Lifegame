@@ -8,8 +8,8 @@ import com.holub.ui.PopupSite;
 
 /*******************************************************************
  * An implemenation of Conway's Game of Life.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public final class Life extends JFrame {

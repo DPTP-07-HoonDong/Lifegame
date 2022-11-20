@@ -1,6 +1,5 @@
 package com.holub.life;
 
-import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
@@ -23,8 +22,8 @@ import com.holub.tools.Publisher;
  * 				that caused the running game to overwrite any
  * 				displayed menus. See {@link #menuIsActive} for
  * 				details.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public class Clock {

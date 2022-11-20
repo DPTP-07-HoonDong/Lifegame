@@ -23,7 +23,7 @@ import com.holub.life.Resident;
  * outermost Neighborhood. It also creates the Composite
  * Neighborhood.
  *
- * @include /etc/license.txt
+ * {@code @include} /etc/license.txt
  */
 
 public class Universe extends JPanel {
@@ -90,7 +90,7 @@ public class Universe extends JPanel {
 
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {//{=Universe.mouse}
+            public void mousePressed(MouseEvent e) { //{=Universe.mouse}
                 Rectangle bounds = getBounds();
                 bounds.x = 0;
                 bounds.y = 0;

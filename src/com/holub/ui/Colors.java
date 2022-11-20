@@ -12,37 +12,37 @@ import java.awt.*;
  *<table>
  *	<tr><td>Color 			</td><td> Sample 								   </td><td> R  </td><td> G  </td><td> B  </td></tr>
  *	<tr><td>TRANSPARENT		</td><td> &nbsp;								   </td colspan=3> no value, alias for null. </td></tr>
- *
+ * <p>
  *	<tr><td>DARK_RED		</td><td bgcolor=#990000> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 99 </td><td> 00 </td><td> 00 </td></tr>
  *	<tr><td>MEDIUM_RED		</td><td bgcolor=#cc0000> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> cc </td><td> 00 </td><td> 00 </td></tr>
  *	<tr><td>LIGHT_RED		</td><td bgcolor=#ff0000> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> ff </td><td> 00 </td><td> 00 </td></tr>
- *
+ * <p>
  *	<tr><td>DARK_ORANGE		</td><td bgcolor=#ff6600> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> ff </td><td> 66 </td><td> 00 </td></tr>
  *	<tr><td>MEDIUM_ORANGE	</td><td bgcolor=#ff9900> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> ff </td><td> 99 </td><td> 00 </td></tr>
  *	<tr><td>LIGHT_ORANGE	</td><td bgcolor=#ffcc00> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> ff </td><td> cc </td><td> 00 </td></tr>
  *	<tr><td>ORANGE			</td><td bgcolor=#ff9900> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> ff </td><td> 99 </td><td> 00 </td></tr>
- *
+ * <p>
  *	<tr><td>OCHRE			</td><td bgcolor=#cc9900> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> cc </td><td> 99 </td><td> 00 </td></tr>
  *	<tr><td>DARK_YELLOW		</td><td bgcolor=#ffff00> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> ff </td><td> ff </td><td> 00 </td></tr>
  *	<tr><td>MEDIUM_YELLOW	</td><td bgcolor=#ffff99> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> ff </td><td> ff </td><td> 99 </td></tr>
  *	<tr><td>LIGHT_YELLOW	</td><td bgcolor=#ffffdd> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> ff </td><td> ff </td><td> dd </td></tr>
- *
+ * <p>
  *	<tr><td>DARK_GREEN		</td><td bgcolor=#006600> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 00 </td><td> 66 </td><td> 00 </td></tr>
  *	<tr><td>MEDIUM_GREEN	</td><td bgcolor=#009900> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 00 </td><td> 99 </td><td> 00 </td></tr>
  *	<tr><td>LIGHT_GREEN		</td><td bgcolor=#00ff00> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 00 </td><td> ff </td><td> 00 </td></tr>
  *	<tr><td>GREEN			</td><td bgcolor=#009900> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 00 </td><td> 99 </td><td> 00 </td></tr>
- *
+ * <p>
  *	<tr><td>DARK_BLUE		</td><td bgcolor=#000099> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 00 </td><td> 00 </td><td> 99 </td></tr>
  *	<tr><td>MEDIUM_BLUE		</td><td bgcolor=#0000cc> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 00 </td><td> 00 </td><td> cc </td></tr>
  *	<tr><td>LIGHT_BLUE		</td><td bgcolor=#0000ff> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 00 </td><td> 00 </td><td> ff </td></tr>
- *
+ * <p>
  *	<tr><td>DARK_PURPLE		</td><td bgcolor=#990099> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> 99 </td><td> 00 </td><td> 99 </td></tr>
  *	<tr><td>MEDIUM_PURPLE	</td><td bgcolor=#cc00ff> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> cc </td><td> 00 </td><td> ff </td></tr>
  *	<tr><td>LIGHT_PURPLE	</td><td bgcolor=#cc99ff> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> cc </td><td> 99 </td><td> ff </td></tr>
  *	<tr><td>PURPLE			</td><td bgcolor=#cc00ff> &nbsp;&nbsp;&nbsp;&nbsp; </td><td> cc </td><td> 00 </td><td> ff </td></tr>
  *</table>
  *
- * @include /etc/license.txt
+ * {@code @include} /etc/license.txt
  * @see java.awt.Color
  */
 

@@ -19,8 +19,8 @@ package com.holub.life;
  *  Direction.ANY. These differ from a standard direction in that
  *  they cannot be modified. A call to {@link #add} results in
  *  an <code>UnsupportedOperationException</code> toss.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public class Direction {

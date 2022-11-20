@@ -4,8 +4,8 @@ import java.io.*;
 
 /***
  * All mementos created by the Cells are Storable.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public interface Storable {
