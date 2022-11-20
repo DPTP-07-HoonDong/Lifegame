@@ -2,6 +2,7 @@ package com.holub.ui;
 
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.logging.*;
 import java.util.regex.*;
 import java.net.*;
@@ -93,8 +94,8 @@ import javax.swing.*;
  *	do anything special, the name is used as the label. You can provide
  *	a file that maps names to arbitrary strings (and also defines
  *	menu shortcuts) by calling {@link #mapNames mapNames(...)}.
- *
- *  @include /etc/license.txt
+ * <p>
+ *  {@code @include} /etc/license.txt
  */
 
 public final class MenuSite {
@@ -106,7 +107,7 @@ public final class MenuSite {
      * Set of MenuSite.Item objects that identify all
      * items added by that requester.
      */
-    private static Map requesters = new HashMap();
+    private static Map<Object, List<Item>> requesters = new HashMap<>();
 
     /*** Maps "names" to the visible labels that actually
      *  appear on the screen.
@@ -127,7 +128,7 @@ public final class MenuSite {
     private static Pattern shortcutExtractor =
             Pattern.compile(
                     "\\s*([^;]+?)\\s*"                // value
-                            + "(;\\s*([^\\s].*?))?\\s*$");    // ; shortcut
+                            + "(;\\s*(\\S.*?))?\\s*$");    // ; shortcut
 
     /*** Isolate the menu names. Given an input string of the
      *  form "one:two:three:four", after matching
@@ -157,7 +158,7 @@ public final class MenuSite {
      *	will appear on the screen (left to right).
      */
 
-    private static final LinkedList menuBarContents = new LinkedList();
+    private static final LinkedList<Item> menuBarContents = new LinkedList<>();
 
     /*** ***************************************************************
      * MenuSite is a singleton. A private constructor prevents
@@ -170,7 +171,7 @@ public final class MenuSite {
      *  method in an assertion ("assert valid()") then it will
      *  be removed when assetions are enabled.
      *
-     *  @throws AssertionException if the menu hasn't been established.
+     *  @throws AssertionError if the menu hasn't been established.
      */
 
     private static boolean valid() {
@@ -365,12 +366,10 @@ public final class MenuSite {
         assert requester != null;
         assert valid();
 
-        Collection allItems = (Collection) (requesters.remove(requester));
+        List<Item> allItems = requesters.remove(requester);
 
         if (allItems != null) {
-            Iterator i = allItems.iterator();
-            while (i.hasNext()) {
-                Item current = (Item) i.next();
+            for (Item current : allItems) {
                 current.detachYourselfFromYourParent();
             }
         }
@@ -391,12 +390,10 @@ public final class MenuSite {
         assert requester != null;
         assert valid();
 
-        Collection allItems = (Collection) (requesters.get(requester));
+        List<Item> allItems = requesters.get(requester);
 
         if (allItems != null) {
-            Iterator i = allItems.iterator();
-            while (i.hasNext()) {
-                Item current = (Item) i.next();
+            for (Item current : allItems) {
                 current.setEnableAttribute(enable);
             }
         }
@@ -456,12 +453,10 @@ public final class MenuSite {
         assert menuSpecifier != null;
         assert valid();
 
-        Collection allItems = (Collection) (requesters.get(requester));
+        List<Item> allItems = requesters.get(requester);
 
         if (allItems != null) {
-            Iterator i = allItems.iterator();
-            while (i.hasNext()) {
-                Item current = (Item) i.next();
+            for (Item current : allItems) {
                 if (current.specifiedBy(menuSpecifier)) {
                     if (current.item() instanceof JSeparator) {
                         continue;
@@ -471,7 +466,7 @@ public final class MenuSite {
                         return (JMenu) (current.item());
                     }
 
-                    if (((JMenuItem) current.item()).getName().equals(name)) {
+                    if (current.item().getName().equals(name)) {
                         return (JMenuItem) current.item();
                     }
                 }
@@ -551,8 +546,7 @@ public final class MenuSite {
             // are manufactured by Swing, not by me.
 
             if (contents[i] instanceof JPopupMenu) {
-                found = getSubmenuByName(name,
-                        ((JPopupMenu) contents[i]).getSubElements());
+                found = getSubmenuByName(name, contents[i].getSubElements());
             } else if (((JMenuItem) contents[i]).getName().equals(name)) {
                 found = (JMenuItem) contents[i];
             }
@@ -667,7 +661,7 @@ public final class MenuSite {
      *  method does nothing if (1) there's no map or (2) the
      *  name parameter isn't a key in the map. The incoming item
      *  must have a name or label. If it has only a label, then
-     *  the name is set to the label and the label is replaced
+     *  the name is set to the label and the label are replaced
      *  by whatever label is found in the index file.
      *  The method also silently does nothing if the incoming
      *  <code>JMenuItem</code> does not have a name.
@@ -700,11 +694,10 @@ public final class MenuSite {
                 if (shortcut != null) {
                     if (shortcut.length() == 1) {
                         item.setAccelerator(KeyStroke.getKeyStroke(
-                                        shortcut.toUpperCase().charAt(0),
-                                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),
-                                        false
-                                )
-                        );
+                                shortcut.toUpperCase().charAt(0),
+                                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx(),
+                                false
+                        ));
                     } else {
                         KeyStroke key = KeyStroke.getKeyStroke(shortcut);
                         if (key != null) {
@@ -728,17 +721,12 @@ public final class MenuSite {
      * if there are no menus associated with the requester at
      * present.
      */
-    private static Collection menusAddedBy(Object requester) {
+    private static List<Item> menusAddedBy(Object requester) {
         assert requester != null : "Bad argument";
         assert requesters != null : "No requesters";
         assert valid();
 
-        Collection menus = (Collection) (requesters.get(requester));
-        if (menus == null) {
-            menus = new LinkedList();
-            requesters.put(requester, menus);
-        }
-        return menus;
+        return requesters.computeIfAbsent(requester, k -> new LinkedList<>());
     }
 
     /*** ***********************************************************
@@ -758,7 +746,7 @@ public final class MenuSite {
         private boolean isHelpMenu;
 
         public String toString() {
-            StringBuffer b = new StringBuffer(parentSpecification);
+            StringBuilder b = new StringBuilder(parentSpecification);
             if (item instanceof JMenuItem) {
                 JMenuItem i = (JMenuItem) item;
                 b.append(":");
@@ -827,11 +815,11 @@ public final class MenuSite {
 
             if (parent instanceof JMenu) {
                 ((JMenu) parent).add(item);
-            } else if (menuBarContents.size() <= 0) {
+            } else if (menuBarContents.size() == 0) {
                 menuBarContents.add(this);
                 ((JMenuBar) parent).add(item);
             } else {
-                Item last = (Item) (menuBarContents.getLast());
+                Item last = menuBarContents.getLast();
                 if (!last.isHelpMenu) {
                     menuBarContents.addLast(this);
                     ((JMenuBar) parent).add(item);
@@ -892,9 +880,9 @@ public final class MenuSite {
             // the current-contents list.
 
             menuBar = new JMenuBar();
-            ListIterator i = menuBarContents.listIterator(0);
+            ListIterator<Item> i = menuBarContents.listIterator(0);
             while (i.hasNext()) {
-                menuBar.add(((Item) (i.next())).item);
+                menuBar.add(i.next().item);
             }
 
             // Replace the old menu bar with the new one.
@@ -947,12 +935,12 @@ public final class MenuSite {
 
             if (me.getClass() != JMenuItem.class) {
                 MenuElement[] contents = me.getSubElements();
-                for (int i = 0; i < contents.length; ++i) {
-                    if (contents[i].getClass() != JMenuItem.class) {
+                for (MenuElement content : contents) {
+                    if (content.getClass() != JMenuItem.class) {
                         ++traversalDepth;
-                        visitPostorder(contents[i], v);
-                        if (!(contents[i] instanceof JPopupMenu)) {
-                            v.visit((JMenu) contents[i], traversalDepth);
+                        visitPostorder(content, v);
+                        if (!(content instanceof JPopupMenu)) {
+                            v.visit((JMenu) content, traversalDepth);
                         }
                         --traversalDepth;
                     }
@@ -991,7 +979,7 @@ public final class MenuSite {
                 }
             });
             MenuSite.establish(this);
-            show();
+            setVisible(true);
         }
 
         //------------------------------------------------------------
@@ -1035,11 +1023,7 @@ public final class MenuSite {
                     instance, "Main", "Add Line Item to Menu",
                     e -> MenuSite.addLine(instance, "Main",
                             "Remove Main and Help menus",
-                            new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    MenuSite.removeMyMenus(instance);
-                                }
-                            }
+                            e1 -> MenuSite.removeMyMenus(instance)
                     )
             );
 
