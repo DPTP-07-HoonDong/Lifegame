@@ -159,17 +159,9 @@ public class Publisher {
             Notifier source = new Notifier();
             int errors = 0;
 
-            Observer listener1 = new Observer() {
-                public void notify(String arg) {
-                    actualResults.append("1[" + arg + "]");
-                }
-            };
+            Observer listener1 = arg -> actualResults.append("1[" + arg + "]");
 
-            Observer listener2 = new Observer() {
-                public void notify(String arg) {
-                    actualResults.append("2[" + arg + "]");
-                }
-            };
+            Observer listener2 = arg -> actualResults.append("2[" + arg + "]");
 
             source.addObserver(listener1);
             source.addObserver(listener2);

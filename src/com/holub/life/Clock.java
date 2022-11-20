@@ -93,21 +93,19 @@ public class Clock {
         // First set up a single listener that will handle all the
         // menu-selection events except "Exit"
 
-        ActionListener modifier = new ActionListener() { //{=startSetup}
-            public void actionPerformed(ActionEvent e) {
-                String name = ((JMenuItem) e.getSource()).getName();
-                char toDo = name.charAt(0);
+        ActionListener modifier = e -> { //{=startSetup}
+            String name = ((JMenuItem) e.getSource()).getName();
+            char toDo = name.charAt(0);
 
-                if (toDo == 'T') {
-                    tick();                      // single tick
-                } else {
-                    startTicking(
-                            toDo == 'A' ? 500 :     // agonizing
-                                    toDo == 'S' ? 150 :     // slow
-                                            toDo == 'M' ? 70 :      // medium
-                                                    toDo == 'F' ? 30 : 0    // fast / halt
-                    );
-                }
+            if (toDo == 'T') {
+                tick();                      // single tick
+            } else {
+                startTicking(
+                        toDo == 'A' ? 500 :     // agonizing
+                                toDo == 'S' ? 150 :     // slow
+                                        toDo == 'M' ? 70 :      // medium
+                                                toDo == 'F' ? 30 : 0    // fast / halt
+                );
             }
         };
         // {=midSetup}
@@ -152,11 +150,9 @@ public class Clock {
      * stopped. (Life uses this for single stepping.)
      */
     public void tick() {
-        publisher.publish(new Publisher.Distributor() {
-            public void deliverTo(Object subscriber) {
-                if (!menuIsActive())
-                    ((Listener) subscriber).tick();
-            }
+        publisher.publish(subscriber -> {
+            if (!menuIsActive())
+                ((Listener) subscriber).tick();
         });
     }
 
