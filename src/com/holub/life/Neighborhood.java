@@ -523,7 +523,7 @@ public final class Neighborhood implements Cell {
         }
 
         public String toString() {
-            StringBuffer b = new StringBuffer();
+            StringBuilder b = new StringBuilder();
 
             b.append("NeighborhoodState:\n");
             for (Point liveCell : liveCells) {
