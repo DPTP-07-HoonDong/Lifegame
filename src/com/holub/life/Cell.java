@@ -136,12 +136,12 @@ public interface Cell {
     /**
      * Possible value for the "load" argument to transfer()
      */
-    public static boolean STORE = false;
+    boolean STORE = false;
 
     /**
      * Possible value for the "load" argument to transfer()
      */
-    public static boolean LOAD = true;
+    boolean LOAD = true;
 
     /**
      * This method is used by container of the outermost cell.
@@ -161,7 +161,7 @@ public interface Cell {
      * members in an interface.
      */
 
-    public static final Cell DUMMY = new Cell() {
+    Cell DUMMY = new Cell() {
         public boolean figureNextState(
                 Cell n, Cell s, Cell e, Cell w,
                 Cell ne, Cell nw, Cell se, Cell sw

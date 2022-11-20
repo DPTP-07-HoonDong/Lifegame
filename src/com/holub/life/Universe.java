@@ -22,7 +22,6 @@ import com.holub.life.Resident;
  * Swing events and translates them into requests to the
  * outermost Neighborhood. It also creates the Composite
  * Neighborhood.
- *
  * {@code @include} /etc/license.txt
  */
 

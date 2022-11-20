@@ -904,7 +904,7 @@ public final class MenuSite {
 
     private static class Debug {
         public interface Visitor {
-            public void visit(JMenu e, int depth);
+            void visit(JMenu e, int depth);
         }
 
         private static int traversalDepth = -1;

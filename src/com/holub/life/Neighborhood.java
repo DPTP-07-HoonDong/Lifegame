@@ -521,7 +521,7 @@ public final class Neighborhood implements Cell {
 
             b.append("NeighborhoodState:\n");
             for (Point liveCell : liveCells) {
-                b.append(liveCell.toString() + "\n");
+                b.append(liveCell.toString()).append("\n");
             }
             return b.toString();
         }

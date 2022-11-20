@@ -159,9 +159,9 @@ public class Publisher {
             Notifier source = new Notifier();
             int errors = 0;
 
-            Observer listener1 = arg -> actualResults.append("1[" + arg + "]");
+            Observer listener1 = arg -> actualResults.append("1[").append(arg).append("]");
 
-            Observer listener2 = arg -> actualResults.append("2[" + arg + "]");
+            Observer listener2 = arg -> actualResults.append("2[").append(arg).append("]");
 
             source.addObserver(listener1);
             source.addObserver(listener2);
@@ -190,9 +190,9 @@ public class Publisher {
             if (!expectedResults.toString().equals(actualResults.toString())) {
                 System.err.print("add/remove/fire failure.\n");
                 System.err.print("Expected:[");
-                System.err.print(expectedResults.toString());
+                System.err.print(expectedResults);
                 System.err.print("]\nActual:  [");
-                System.err.print(actualResults.toString());
+                System.err.print(actualResults);
                 System.err.print("]");
                 ++errors;
             }
