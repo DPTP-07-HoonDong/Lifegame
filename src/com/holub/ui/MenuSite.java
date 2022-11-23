@@ -1,5 +1,7 @@
 package com.holub.ui;
 
+import com.holub.life.feature.Feature;
+
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -399,6 +401,28 @@ public final class MenuSite {
         if (allItems != null) {
             for (Item current : allItems) {
                 current.setEnableAttribute(enable);
+            }
+        }
+    }
+
+    /*** **************************************************************
+     * Unselect or select all menus and menu items added by a specific
+     * requester. You can disable a single menu item by using
+     * <code>
+     * MenuSite.getMyMenuItem(requester, false, "parent:spec", "name").setEnbled(FALSE);
+     * </code>
+     *
+     * @param select true to enable all the requester's menu items.
+     */
+    public static void setSelected(Object requester, boolean isPopupMenu, boolean select) {
+        assert requester != null;
+        assert valid();
+
+        List<Item> allItems = requesters.get(requester);
+
+        if (allItems != null) {
+            for (Item current : allItems) {
+                current.setSelectedAttribute(select);
             }
         }
     }
@@ -875,6 +899,17 @@ public final class MenuSite {
             if (item instanceof JMenuItem) {
                 JMenuItem item = (JMenuItem) this.item;
                 item.setEnabled(on);
+            }
+        }
+
+        /*** ******************************************************
+         * Set or reset the "unselected" state of a menu item.
+         */
+
+        public void setSelectedAttribute(boolean on) {
+            if (item instanceof JMenuItem) {
+                JMenuItem item = (JMenuItem) this.item;
+                item.setSelected(on);
             }
         }
 
