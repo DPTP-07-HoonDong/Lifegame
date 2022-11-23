@@ -427,7 +427,12 @@ public final class MenuSite {
         }
     }
 
-    public static void showPopup(Point here) {
+    public static void showPopup(Object requester, Point here, List<Feature> cellFeatures) {
+        setSelected(requester, true, false);
+        for (Feature f: cellFeatures) {
+            String[] menuName = f.getMenuName();
+            getMyMenuItem(requester, menuName[0], menuName[1]).setSelected(true);
+        }
         popupMenu.show(menuFrame, here.x, here.y);
     }
 

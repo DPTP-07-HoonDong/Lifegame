@@ -9,12 +9,6 @@ import java.awt.event.*;
 import com.holub.io.Files;
 import com.holub.ui.MenuSite;
 
-import com.holub.life.Cell;
-import com.holub.life.Storable;
-import com.holub.life.Clock;
-import com.holub.life.Neighborhood;
-import com.holub.life.Resident;
-
 /**
  * The Universe is a mediator that sits between the Swing
  * event model and the Life classes. It is also a singleton,
@@ -93,8 +87,16 @@ public class Universe extends JPanel {
                 Rectangle bounds = getBounds();
                 bounds.x = 0;
                 bounds.y = 0;
-                outermostCell.userClicked(e.getPoint(), bounds);
-                repaint();
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    outermostCell.userClicked(e.getPoint(), bounds);
+                    repaint();
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    MenuSite.showPopup(
+                            Universe.instance(),
+                            e.getPoint(),
+                            outermostCell.getCellFeature(e.getPoint(), bounds)
+                    );
+                }
             }
         });
 
@@ -111,6 +113,10 @@ public class Universe extends JPanel {
         MenuSite.addLine(this, false, "Grid", "Store", e -> doStore());
 
         MenuSite.addLine(this, false, "Grid", "Exit", e -> System.exit(0));
+
+        MenuSite.addLine(this, true, "Dummy", "3", e -> {});
+        MenuSite.addLine(this, true, "Dummy", "2", e -> {});
+        MenuSite.addLine(this, true, "Dummy", "Default", e -> {});
 
         Clock.instance().addClockListener(() -> { //{=Universe.clock.subscribe}
             if (outermostCell.figureNextState(
