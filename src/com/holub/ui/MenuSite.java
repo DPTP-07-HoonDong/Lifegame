@@ -332,7 +332,7 @@ public final class MenuSite {
         } else {
             assert listener != null : "null listener";
 
-            JMenuItem lineItem = new JMenuItem(name);
+            JMenuItem lineItem = isPopupMenu ? new JRadioButtonMenuItem(name) : new JMenuItem(name);
             lineItem.setName(name);
             lineItem.addActionListener(listener);
             setLabelAndShortcut(lineItem);
