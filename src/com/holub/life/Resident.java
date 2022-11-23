@@ -1,12 +1,12 @@
 package com.holub.life;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.holub.life.feature.Feature;
 import com.holub.ui.Colors;    // Contains constants specifying various
 // colors not defined in java.awt.Color.
-import com.holub.life.Cell;
-import com.holub.life.Storable;
-import com.holub.life.Direction;
 
 /*** ****************************************************************
  * The Resident class implements a single cell---a "resident" of a
@@ -101,6 +101,13 @@ public final class Resident implements Cell {
 
     public void userClicked(Point here, Rectangle surface) {
         amAlive = !amAlive;
+    }
+
+    @Override
+    public List<Feature> getCellFeature(Point here, Rectangle surface) {
+        List<Feature> DUMMYS = new ArrayList<>();
+        DUMMYS.add(Feature.DUMMY);
+        return DUMMYS;
     }
 
     public void clear() {

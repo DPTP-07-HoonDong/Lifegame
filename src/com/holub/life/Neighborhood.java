@@ -3,13 +3,11 @@ package com.holub.life;
 import java.awt.*;
 import java.util.*;
 import java.io.*;
+import java.util.List;
 
+import com.holub.life.feature.Feature;
 import com.holub.ui.Colors;
 import com.holub.asynch.ConditionVariable;
-
-import com.holub.life.Cell;
-import com.holub.life.Direction;
-import com.holub.life.Storable;
 
 /***
  * A group of {@link Cell} objects. Cells are grouped into neighborhoods
@@ -414,6 +412,20 @@ public final class Neighborhood implements Cell {
         grid[row][column].userClicked(position, subcell); //{=Neighborhood.userClicked.call}
         amActive = true;
         rememberThatCellAtEdgeChangedState(row, column);
+    }
+
+    @Override
+    public List<Feature> getCellFeature(Point here, Rectangle surface) {
+        int pixelsPerCell = surface.width / gridSize;
+        int row = here.y / pixelsPerCell;
+        int column = here.x / pixelsPerCell;
+        int rowOffset = here.y % pixelsPerCell;
+        int columnOffset = here.x % pixelsPerCell;
+
+        Point position = new Point(columnOffset, rowOffset);
+        Rectangle subcell = new Rectangle(0, 0, pixelsPerCell, pixelsPerCell);
+
+        return grid[row][column].getCellFeature(position, subcell); //{=Neighborhood.userClicked.call}
     }
 
     public boolean isAlive() {

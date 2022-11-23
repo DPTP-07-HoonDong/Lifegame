@@ -1,8 +1,9 @@
 package com.holub.life;
 
 import java.awt.*;
+import java.util.List;
 
-import com.holub.life.Storable;
+import com.holub.life.feature.Feature;
 
 /***
  * This interface is the basic unit that comprises a life board.
@@ -71,6 +72,8 @@ public interface Cell {
      */
 
     void userClicked(Point here, Rectangle surface);
+
+    List<Feature> getCellFeature(Point here, Rectangle surface);
 
     /**
      * Return true if this cell or any subcells are alive.
@@ -197,6 +200,11 @@ public interface Cell {
         }
 
         public void userClicked(Point h, Rectangle s) { }
+
+        @Override
+        public List<Feature> getCellFeature(Point here, Rectangle surface) {
+            return null;
+        }
 
         public void redraw(Graphics g, Rectangle here,
                            boolean drawAll) {
