@@ -1,16 +1,17 @@
 package com.holub.life;
 
 import java.awt.*;
+import java.util.List;
 
-import com.holub.life.Storable;
+import com.holub.life.feature.Feature;
 
 /***
  * This interface is the basic unit that comprises a life board.
  * It's implemented both by {@link Resident} (which represents
  * an individual cell on the board) and {@link Neighborhood},
  * which represents a group of cells.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public interface Cell {
@@ -71,6 +72,8 @@ public interface Cell {
      */
 
     void userClicked(Point here, Rectangle surface);
+
+    List<Feature> getCellFeature(Point here, Rectangle surface);
 
     /**
      * Return true if this cell or any subcells are alive.
@@ -136,12 +139,12 @@ public interface Cell {
     /**
      * Possible value for the "load" argument to transfer()
      */
-    public static boolean STORE = false;
+    boolean STORE = false;
 
     /**
      * Possible value for the "load" argument to transfer()
      */
-    public static boolean LOAD = true;
+    boolean LOAD = true;
 
     /**
      * This method is used by container of the outermost cell.
@@ -161,7 +164,7 @@ public interface Cell {
      * members in an interface.
      */
 
-    public static final Cell DUMMY = new Cell() {
+    Cell DUMMY = new Cell() {
         public boolean figureNextState(
                 Cell n, Cell s, Cell e, Cell w,
                 Cell ne, Cell nw, Cell se, Cell sw
@@ -197,6 +200,11 @@ public interface Cell {
         }
 
         public void userClicked(Point h, Rectangle s) { }
+
+        @Override
+        public List<Feature> getCellFeature(Point here, Rectangle surface) {
+            return null;
+        }
 
         public void redraw(Graphics g, Rectangle here,
                            boolean drawAll) {

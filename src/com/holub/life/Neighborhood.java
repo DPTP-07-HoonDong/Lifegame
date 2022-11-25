@@ -1,21 +1,13 @@
 package com.holub.life;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import java.io.*;
-import javax.swing.*;
+import java.util.List;
 
-import com.holub.io.Files;
-import com.holub.life.Cell;
-import com.holub.ui.MenuSite;
+import com.holub.life.feature.Feature;
 import com.holub.ui.Colors;
 import com.holub.asynch.ConditionVariable;
-
-import com.holub.life.Cell;
-import com.holub.life.Clock;
-import com.holub.life.Direction;
-import com.holub.life.Storable;
 
 /***
  * A group of {@link Cell} objects. Cells are grouped into neighborhoods
@@ -29,8 +21,8 @@ import com.holub.life.Storable;
  * the active edges in transistion() rather then figureNextState().
  * The original call is commented out and the new line is marked 
  * with "(1)"
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public final class Neighborhood implements Cell {
@@ -422,6 +414,20 @@ public final class Neighborhood implements Cell {
         rememberThatCellAtEdgeChangedState(row, column);
     }
 
+    @Override
+    public List<Feature> getCellFeature(Point here, Rectangle surface) {
+        int pixelsPerCell = surface.width / gridSize;
+        int row = here.y / pixelsPerCell;
+        int column = here.x / pixelsPerCell;
+        int rowOffset = here.y % pixelsPerCell;
+        int columnOffset = here.x % pixelsPerCell;
+
+        Point position = new Point(columnOffset, rowOffset);
+        Rectangle subcell = new Rectangle(0, 0, pixelsPerCell, pixelsPerCell);
+
+        return grid[row][column].getCellFeature(position, subcell); //{=Neighborhood.userClicked.call}
+    }
+
     public boolean isAlive() {
         return true;
     }
@@ -523,11 +529,11 @@ public final class Neighborhood implements Cell {
         }
 
         public String toString() {
-            StringBuffer b = new StringBuffer();
+            StringBuilder b = new StringBuilder();
 
             b.append("NeighborhoodState:\n");
             for (Point liveCell : liveCells) {
-                b.append(liveCell.toString() + "\n");
+                b.append(liveCell.toString()).append("\n");
             }
             return b.toString();
         }

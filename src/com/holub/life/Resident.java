@@ -1,24 +1,24 @@
 package com.holub.life;
 
 import java.awt.*;
-import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.holub.life.feature.Feature;
 import com.holub.ui.Colors;    // Contains constants specifying various
 // colors not defined in java.awt.Color.
-import com.holub.life.Cell;
-import com.holub.life.Storable;
-import com.holub.life.Direction;
-import com.holub.life.Neighborhood;
-import com.holub.life.Universe;
 
 /*** ****************************************************************
  * The Resident class implements a single cell---a "resident" of a
  * block.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public final class Resident implements Cell {
+//    TTLFeature ttlFeature;
+//    ColorFeature colorFeature;
+
     private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
     private static final Color LIVE_COLOR = Color.RED;
     private static final Color DEAD_COLOR = Colors.LIGHT_YELLOW;
@@ -106,6 +106,16 @@ public final class Resident implements Cell {
         amAlive = !amAlive;
     }
 
+    @Override
+    public List<Feature> getCellFeature(Point here, Rectangle surface) {
+        List<Feature> features = new ArrayList<>();
+        features.add(Feature.DUMMY);
+//        features.add(ttlFeature);
+//        features.add(colorFeature);
+
+        return features;
+    }
+
     public void clear() {
         amAlive = willBeAlive = false;
     }
@@ -129,14 +139,11 @@ public final class Resident implements Cell {
     public boolean transfer(Storable blob, Point upperLeft, boolean doLoad) {
         Memento memento = (Memento) blob;
         if (doLoad) {
-            if (amAlive = willBeAlive = memento.isAlive(upperLeft)) {
-                return true;
-            }
+            amAlive = willBeAlive = memento.isAlive(upperLeft);
+            return amAlive;
         } else if (amAlive) {                   // store only live cells
             memento.markAsAlive(upperLeft);
         }
-
-
         return false;
     }
 

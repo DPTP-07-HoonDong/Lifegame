@@ -9,12 +9,6 @@ import java.awt.event.*;
 import com.holub.io.Files;
 import com.holub.ui.MenuSite;
 
-import com.holub.life.Cell;
-import com.holub.life.Storable;
-import com.holub.life.Clock;
-import com.holub.life.Neighborhood;
-import com.holub.life.Resident;
-
 /**
  * The Universe is a mediator that sits between the Swing
  * event model and the Life classes. It is also a singleton,
@@ -22,8 +16,7 @@ import com.holub.life.Resident;
  * Swing events and translates them into requests to the
  * outermost Neighborhood. It also creates the Composite
  * Neighborhood.
- *
- * @include /etc/license.txt
+ * {@code @include} /etc/license.txt
  */
 
 public class Universe extends JPanel {
@@ -90,28 +83,40 @@ public class Universe extends JPanel {
 
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {//{=Universe.mouse}
+            public void mousePressed(MouseEvent e) { //{=Universe.mouse}
                 Rectangle bounds = getBounds();
                 bounds.x = 0;
                 bounds.y = 0;
-                outermostCell.userClicked(e.getPoint(), bounds);
-                repaint();
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    outermostCell.userClicked(e.getPoint(), bounds);
+                    repaint();
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    MenuSite.showPopup(
+                            Universe.instance(),
+                            e.getPoint(),
+                            outermostCell.getCellFeature(e.getPoint(), bounds)
+                    );
+                }
             }
         });
 
         MenuSite.addLine(
-                this, "Grid", "Clear",
+                this, false, "Grid", "Clear",
                 e -> {
                     outermostCell.clear();
                     repaint();
                 }
         );
 
-        MenuSite.addLine(this, "Grid", "Load", e -> doLoad()); // {=Universe.load.setup}
+        MenuSite.addLine(this, false, "Grid", "Load", e -> doLoad()); // {=Universe.load.setup}
 
-        MenuSite.addLine(this, "Grid", "Store", e -> doStore());
+        MenuSite.addLine(this, false, "Grid", "Store", e -> doStore());
 
-        MenuSite.addLine(this, "Grid", "Exit", e -> System.exit(0));
+        MenuSite.addLine(this, false, "Grid", "Exit", e -> System.exit(0));
+
+        MenuSite.addLine(this, true, "Dummy", "3", e -> {});
+        MenuSite.addLine(this, true, "Dummy", "2", e -> {});
+        MenuSite.addLine(this, true, "Dummy", "Default", e -> {});
 
         Clock.instance().addClockListener(() -> { //{=Universe.clock.subscribe}
             if (outermostCell.figureNextState(

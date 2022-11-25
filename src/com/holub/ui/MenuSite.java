@@ -1,7 +1,10 @@
 package com.holub.ui;
 
+import com.holub.life.feature.Feature;
+
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.logging.*;
 import java.util.regex.*;
 import java.net.*;
@@ -93,20 +96,21 @@ import javax.swing.*;
  *	do anything special, the name is used as the label. You can provide
  *	a file that maps names to arbitrary strings (and also defines
  *	menu shortcuts) by calling {@link #mapNames mapNames(...)}.
- *
- *  @include /etc/license.txt
+ * <p>
+ *  {@code @include} /etc/license.txt
  */
 
 public final class MenuSite {
     private static JFrame menuFrame = null;
     private static JMenuBar menuBar = null;
+    private static JPopupMenu popupMenu = null;
 
     /*** The "requesters" table keeps track of who requested which
      * menu items. It is indexed by requester and contains a
      * Set of MenuSite.Item objects that identify all
      * items added by that requester.
      */
-    private static Map requesters = new HashMap();
+    private static Map<Object, List<Item>> requesters = new HashMap<>();
 
     /*** Maps "names" to the visible labels that actually
      *  appear on the screen.
@@ -127,7 +131,7 @@ public final class MenuSite {
     private static Pattern shortcutExtractor =
             Pattern.compile(
                     "\\s*([^;]+?)\\s*"                // value
-                            + "(;\\s*([^\\s].*?))?\\s*$");    // ; shortcut
+                            + "(;\\s*(\\S.*?))?\\s*$");    // ; shortcut
 
     /*** Isolate the menu names. Given an input string of the
      *  form "one:two:three:four", after matching
@@ -157,7 +161,7 @@ public final class MenuSite {
      *	will appear on the screen (left to right).
      */
 
-    private static final LinkedList menuBarContents = new LinkedList();
+    private static final LinkedList<Item> menuBarContents = new LinkedList<>();
 
     /*** ***************************************************************
      * MenuSite is a singleton. A private constructor prevents
@@ -170,12 +174,13 @@ public final class MenuSite {
      *  method in an assertion ("assert valid()") then it will
      *  be removed when assetions are enabled.
      *
-     *  @throws AssertionException if the menu hasn't been established.
+     *  @throws AssertionError if the menu hasn't been established.
      */
 
     private static boolean valid() {
         assert menuFrame != null : "MenuSite not established";
         assert menuBar != null : "MenuSite not established";
+        assert popupMenu != null : "MenuSite not established";
         return true;
     }
 
@@ -192,6 +197,7 @@ public final class MenuSite {
 
         menuFrame = container;
         menuFrame.setJMenuBar(menuBar = new JMenuBar());
+        popupMenu = new JPopupMenu();
 
         assert valid();
     }
@@ -253,7 +259,7 @@ public final class MenuSite {
      *  		an existing line item (as compared to a menu).
      */
     public static void addMenu(Object requester, String menuSpecifier) {
-        createSubmenuByName(requester, menuSpecifier);
+        createSubmenuByName(requester, false, menuSpecifier);
     }
 
     /*** **************************************************************
@@ -304,6 +310,7 @@ public final class MenuSite {
      */
     public static void addLine(
             Object requester,
+            boolean isPopupMenu,
             String toThisMenu,
             String name,
             ActionListener listener
@@ -325,7 +332,7 @@ public final class MenuSite {
         } else {
             assert listener != null : "null listener";
 
-            JMenuItem lineItem = new JMenuItem(name);
+            JMenuItem lineItem = isPopupMenu ? new JRadioButtonMenuItem(name) : new JMenuItem(name);
             lineItem.setName(name);
             lineItem.addActionListener(listener);
             setLabelAndShortcut(lineItem);
@@ -333,10 +340,9 @@ public final class MenuSite {
             element = lineItem;
         }
 
-        JMenu found = createSubmenuByName(requester, toThisMenu);
+        JMenu found = createSubmenuByName(requester, isPopupMenu, toThisMenu);
         if (found == null) {
-            throw new IllegalArgumentException(
-                    "addLine() can't find menu (" + toThisMenu + ")");
+            throw new IllegalArgumentException("addLine() can't find menu (" + toThisMenu + ")");
         }
 
         Item item = new Item(element, found, toThisMenu);
@@ -365,12 +371,10 @@ public final class MenuSite {
         assert requester != null;
         assert valid();
 
-        Collection allItems = (Collection) (requesters.remove(requester));
+        List<Item> allItems = requesters.remove(requester);
 
         if (allItems != null) {
-            Iterator i = allItems.iterator();
-            while (i.hasNext()) {
-                Item current = (Item) i.next();
+            for (Item current : allItems) {
                 current.detachYourselfFromYourParent();
             }
         }
@@ -391,15 +395,44 @@ public final class MenuSite {
         assert requester != null;
         assert valid();
 
-        Collection allItems = (Collection) (requesters.get(requester));
+        List<Item> allItems = requesters.get(requester);
 
         if (allItems != null) {
-            Iterator i = allItems.iterator();
-            while (i.hasNext()) {
-                Item current = (Item) i.next();
+            for (Item current : allItems) {
                 current.setEnableAttribute(enable);
             }
         }
+    }
+
+    /*** **************************************************************
+     * Unselect or select all menus and menu items added by a specific
+     * requester. You can disable a single menu item by using
+     * <code>
+     * MenuSite.getMyMenuItem(requester, false, "parent:spec", "name").setEnbled(FALSE);
+     * </code>
+     *
+     * @param select true to enable all the requester's menu items.
+     */
+    public static void setSelected(Object requester, boolean select) {
+        assert requester != null;
+        assert valid();
+
+        List<Item> allItems = requesters.get(requester);
+
+        if (allItems != null) {
+            for (Item current : allItems) {
+                current.setSelectedAttribute(select);
+            }
+        }
+    }
+
+    public static void showPopup(Object requester, Point here, List<Feature> cellFeatures) {
+        setSelected(requester, false);
+        for (Feature f: cellFeatures) {
+            String[] menuName = f.getMenuName();
+            getMyMenuItem(requester, menuName[0], menuName[1]).setSelected(true);
+        }
+        popupMenu.show(menuFrame, here.x, here.y);
     }
 
 /// TODO:
@@ -456,12 +489,10 @@ public final class MenuSite {
         assert menuSpecifier != null;
         assert valid();
 
-        Collection allItems = (Collection) (requesters.get(requester));
+        List<Item> allItems = requesters.get(requester);
 
         if (allItems != null) {
-            Iterator i = allItems.iterator();
-            while (i.hasNext()) {
-                Item current = (Item) i.next();
+            for (Item current : allItems) {
                 if (current.specifiedBy(menuSpecifier)) {
                     if (current.item() instanceof JSeparator) {
                         continue;
@@ -471,7 +502,7 @@ public final class MenuSite {
                         return (JMenu) (current.item());
                     }
 
-                    if (((JMenuItem) current.item()).getName().equals(name)) {
+                    if (current.item().getName().equals(name)) {
                         return (JMenuItem) current.item();
                     }
                 }
@@ -490,7 +521,7 @@ public final class MenuSite {
      * doesn't exist, create it.
      * @see #addMenu
      */
-    private static JMenu createSubmenuByName(Object requester, String menuSpecifier) {
+    private static JMenu createSubmenuByName(Object requester, boolean isPopupMenu, String menuSpecifier) {
         assert requester != null;
         assert menuSpecifier != null;
         assert valid();
@@ -505,7 +536,7 @@ public final class MenuSite {
         // otherwise start the search at the menu addressed by "parent"
 
         JMenuItem child = null;
-        MenuElement parent = menuBar;
+        MenuElement parent = isPopupMenu ? popupMenu :menuBar;
         String childName;
 
         for (int i = 1; (childName = m.group(i++)) != null; parent = child) {
@@ -551,8 +582,7 @@ public final class MenuSite {
             // are manufactured by Swing, not by me.
 
             if (contents[i] instanceof JPopupMenu) {
-                found = getSubmenuByName(name,
-                        ((JPopupMenu) contents[i]).getSubElements());
+                found = getSubmenuByName(name, contents[i].getSubElements());
             } else if (((JMenuItem) contents[i]).getName().equals(name)) {
                 found = (JMenuItem) contents[i];
             }
@@ -667,7 +697,7 @@ public final class MenuSite {
      *  method does nothing if (1) there's no map or (2) the
      *  name parameter isn't a key in the map. The incoming item
      *  must have a name or label. If it has only a label, then
-     *  the name is set to the label and the label is replaced
+     *  the name is set to the label and the label are replaced
      *  by whatever label is found in the index file.
      *  The method also silently does nothing if the incoming
      *  <code>JMenuItem</code> does not have a name.
@@ -700,11 +730,10 @@ public final class MenuSite {
                 if (shortcut != null) {
                     if (shortcut.length() == 1) {
                         item.setAccelerator(KeyStroke.getKeyStroke(
-                                        shortcut.toUpperCase().charAt(0),
-                                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),
-                                        false
-                                )
-                        );
+                                shortcut.toUpperCase().charAt(0),
+                                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx(),
+                                false
+                        ));
                     } else {
                         KeyStroke key = KeyStroke.getKeyStroke(shortcut);
                         if (key != null) {
@@ -728,17 +757,12 @@ public final class MenuSite {
      * if there are no menus associated with the requester at
      * present.
      */
-    private static Collection menusAddedBy(Object requester) {
+    private static List<Item> menusAddedBy(Object requester) {
         assert requester != null : "Bad argument";
         assert requesters != null : "No requesters";
         assert valid();
 
-        Collection menus = (Collection) (requesters.get(requester));
-        if (menus == null) {
-            menus = new LinkedList();
-            requesters.put(requester, menus);
-        }
-        return menus;
+        return requesters.computeIfAbsent(requester, k -> new LinkedList<>());
     }
 
     /*** ***********************************************************
@@ -758,7 +782,7 @@ public final class MenuSite {
         private boolean isHelpMenu;
 
         public String toString() {
-            StringBuffer b = new StringBuffer(parentSpecification);
+            StringBuilder b = new StringBuilder(parentSpecification);
             if (item instanceof JMenuItem) {
                 JMenuItem i = (JMenuItem) item;
                 b.append(":");
@@ -827,11 +851,13 @@ public final class MenuSite {
 
             if (parent instanceof JMenu) {
                 ((JMenu) parent).add(item);
-            } else if (menuBarContents.size() <= 0) {
+            } else if (parent instanceof JPopupMenu) {
+                ((JPopupMenu) parent).add(item);
+            } else if (menuBarContents.size() == 0) {
                 menuBarContents.add(this);
                 ((JMenuBar) parent).add(item);
             } else {
-                Item last = (Item) (menuBarContents.getLast());
+                Item last = menuBarContents.getLast();
                 if (!last.isHelpMenu) {
                     menuBarContents.addLast(this);
                     ((JMenuBar) parent).add(item);
@@ -881,6 +907,17 @@ public final class MenuSite {
         }
 
         /*** ******************************************************
+         * Set or reset the "unselected" state of a menu item.
+         */
+
+        public void setSelectedAttribute(boolean on) {
+            if (item instanceof JMenuItem) {
+                JMenuItem item = (JMenuItem) this.item;
+                item.setSelected(on);
+            }
+        }
+
+        /*** ******************************************************
          * Replace the old menu bar with a new one that reflects
          * the current state of the <code>menuBarContents</code>
          * list.
@@ -892,9 +929,9 @@ public final class MenuSite {
             // the current-contents list.
 
             menuBar = new JMenuBar();
-            ListIterator i = menuBarContents.listIterator(0);
+            ListIterator<Item> i = menuBarContents.listIterator(0);
             while (i.hasNext()) {
-                menuBar.add(((Item) (i.next())).item);
+                menuBar.add(i.next().item);
             }
 
             // Replace the old menu bar with the new one.
@@ -916,7 +953,7 @@ public final class MenuSite {
 
     private static class Debug {
         public interface Visitor {
-            public void visit(JMenu e, int depth);
+            void visit(JMenu e, int depth);
         }
 
         private static int traversalDepth = -1;
@@ -947,12 +984,12 @@ public final class MenuSite {
 
             if (me.getClass() != JMenuItem.class) {
                 MenuElement[] contents = me.getSubElements();
-                for (int i = 0; i < contents.length; ++i) {
-                    if (contents[i].getClass() != JMenuItem.class) {
+                for (MenuElement content : contents) {
+                    if (content.getClass() != JMenuItem.class) {
                         ++traversalDepth;
-                        visitPostorder(contents[i], v);
-                        if (!(contents[i] instanceof JPopupMenu)) {
-                            v.visit((JMenu) contents[i], traversalDepth);
+                        visitPostorder(content, v);
+                        if (!(content instanceof JPopupMenu)) {
+                            v.visit((JMenu) content, traversalDepth);
                         }
                         --traversalDepth;
                     }
@@ -991,7 +1028,7 @@ public final class MenuSite {
                 }
             });
             MenuSite.establish(this);
-            show();
+            setVisible(true);
         }
 
         //------------------------------------------------------------
@@ -1025,31 +1062,27 @@ public final class MenuSite {
 
             Object fileId = new Object();
             MenuSite.addMenu(fileId, "File");
-            MenuSite.addLine(fileId, "File", "Quit", terminator);
-            MenuSite.addLine(fileId, "File", "Bye", terminator);
+            MenuSite.addLine(fileId, false, "File", "Quit", terminator);
+            MenuSite.addLine(fileId, false, "File", "Bye", terminator);
 
             // Now, make a few more menus.
 
             MenuSite.addMenu(instance, "Main");
             MenuSite.addLine(
-                    instance, "Main", "Add Line Item to Menu",
-                    e -> MenuSite.addLine(instance, "Main",
+                    instance, false, "Main", "Add Line Item to Menu",
+                    e -> MenuSite.addLine(instance, false, "Main",
                             "Remove Main and Help menus",
-                            new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    MenuSite.removeMyMenus(instance);
-                                }
-                            }
+                            e1 -> MenuSite.removeMyMenus(instance)
                     )
             );
 
             //---------------------------------------------------------
-            MenuSite.addLine(instance, "Main", "-", null);
+            MenuSite.addLine(instance, false, "Main", "-", null);
             //---------------------------------------------------------
             final Object disable1 = new Object();
 
             MenuSite.addLine(
-                    instance, "Main", "Toggle1",
+                    instance, false, "Main", "Toggle1",
                     e -> {
                         isDisabled1 = !isDisabled1;
                         MenuSite.setEnable(disable1, !isDisabled1);
@@ -1064,13 +1097,13 @@ public final class MenuSite {
             MenuSite.getMyMenuItem(instance, "Main", "Toggle1")
                     .setText("Disable following Item");
 
-            MenuSite.addLine(disable1, "Main", "Disableable", reportIt);
+            MenuSite.addLine(disable1, false, "Main", "Disableable", reportIt);
 
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             final Object disable2 = new Object();
 
             MenuSite.addLine(
-                    instance, "Main", "Toggle2",
+                    instance, false, "Main", "Toggle2",
                     e -> {
                         isDisabled2 = !isDisabled2;
                         MenuSite.setEnable(disable2, !isDisabled2);
@@ -1083,7 +1116,7 @@ public final class MenuSite {
             );
             MenuSite.getMyMenuItem(instance, "Main", "Toggle2")
                     .setText("Disable following Item");
-            MenuSite.addLine(disable2, "Main", "Disableable", reportIt);
+            MenuSite.addLine(disable2, false, "Main", "Disableable", reportIt);
 
             //--------------------------------------------------------
 
@@ -1091,25 +1124,25 @@ public final class MenuSite {
 
             final Object id = new Object();
 
-            MenuSite.addLine(id, "Main", "-", null);
-            MenuSite.addLine(id, "Main", "Remove this item & separator line", e -> MenuSite.removeMyMenus(id));
+            MenuSite.addLine(id, false, "Main", "-", null);
+            MenuSite.addLine(id, false, "Main", "Remove this item & separator line", e -> MenuSite.removeMyMenus(id));
 
             // Check out submenus. Create two of them, one in two
             // steps and the other in a single step. Then add items
             // that remove the submenus to make sure that removal works
             // correctly.
 
-            MenuSite.addLine(instance, "Main", "-", null);
-            MenuSite.addLine(instance, "Main:Submenu1", "Submenu One Item", reportIt);
-            MenuSite.addLine(instance, "Main:Submenu2", "Submenu Two Item", reportIt);
-            MenuSite.addLine(instance, "Main:Submenu3", "Submenu Three Item", reportIt);
-            MenuSite.addLine(instance, "Main:Submenu2:SubSubmenu2", "Sub-Submenu Two Item", reportIt);
+            MenuSite.addLine(instance, false, "Main", "-", null);
+            MenuSite.addLine(instance, false, "Main:Submenu1", "Submenu One Item", reportIt);
+            MenuSite.addLine(instance, false, "Main:Submenu3", "Submenu Three Item", reportIt);
+            MenuSite.addLine(instance, false, "Main:Submenu2", "Submenu Two Item", reportIt);
+            MenuSite.addLine(instance, false, "Main:Submenu2:SubSubmenu2", "Sub-Submenu Two Item", reportIt);
 
-            MenuSite.addLine(instance, "Main:Submenu3:SubSubmenu3", "Sub-Submenu Three Item", reportIt);
+            MenuSite.addLine(instance, false, "Main:Submenu3:SubSubmenu3", "Sub-Submenu Three Item", reportIt);
 
-            MenuSite.addLine(instance, "Main:Submenu3:SubSubmenu3:SubSubSubmenu3", "Sub-Sub-Submenu Three Item", reportIt);
+            MenuSite.addLine(instance, false, "Main:Submenu3:SubSubmenu3:SubSubSubmenu3", "Sub-Sub-Submenu Three Item", reportIt);
 
-            MenuSite.addLine(instance, "Main", "-", null);
+            MenuSite.addLine(instance, false, "Main", "-", null);
 
             // Check that the map file works correctly.
             // Items 5 and 6 are deliberately malformed in the map
@@ -1118,20 +1151,20 @@ public final class MenuSite {
 
             MenuSite.mapNames(new URL("file://c:/src/com/holub/ui/test/menu.map.txt"));
 
-            MenuSite.addLine(instance, "Main", "item.1", reportIt);
-            MenuSite.addLine(instance, "Main", "item.2", reportIt);
-            MenuSite.addLine(instance, "Main", "item.3", reportIt);
-            MenuSite.addLine(instance, "Main", "item.4", reportIt);
-            MenuSite.addLine(instance, "Main", "item.5", reportIt);
-            MenuSite.addLine(instance, "Main", "item.6", reportIt);
-            MenuSite.addLine(instance, "Main", "item.7", reportIt);
+            MenuSite.addLine(instance, false, "Main", "item.1", reportIt);
+            MenuSite.addLine(instance, false, "Main", "item.2", reportIt);
+            MenuSite.addLine(instance, false, "Main", "item.3", reportIt);
+            MenuSite.addLine(instance, false, "Main", "item.4", reportIt);
+            MenuSite.addLine(instance, false, "Main", "item.5", reportIt);
+            MenuSite.addLine(instance, false, "Main", "item.6", reportIt);
+            MenuSite.addLine(instance, false, "Main", "item.7", reportIt);
 
             // Create a help menu. Do it in the middle of things
             // to make sure that it ends up on the far right.
             // Use all three mechanisms for adding menu items directly
             // using the menu's "name," and using the menu's "text").
 
-            MenuSite.addLine(instance, "Help", "Get Help", reportIt);
+            MenuSite.addLine(instance, false, "Help", "Get Help", reportIt);
 
             // Create a second "requester" and have it add a Removal
             // menu with the name RemovalMenu. Picking that menu
@@ -1140,7 +1173,7 @@ public final class MenuSite {
             // it's inserted in the right place.
 
             final Object x = new Object();
-            MenuSite.addLine(x, "Removal", "Select to Remove Removal menu", e -> MenuSite.removeMyMenus(x));
+            MenuSite.addLine(x, false, "Removal", "Select to Remove Removal menu", e -> MenuSite.removeMyMenus(x));
         }
     }
 }

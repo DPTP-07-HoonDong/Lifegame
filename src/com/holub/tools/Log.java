@@ -25,7 +25,7 @@ import java.io.*;
  * 	log.warning( "The sky is falling!" );
  * 	</pre>
  *
- * @include /etc/license.txt
+ * {@code @include} /etc/license.txt
  */
 public class Log {
     /**

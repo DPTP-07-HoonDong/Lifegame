@@ -18,8 +18,8 @@ package com.holub.asynch;
  * wait on a true condition variable. Call <code>set(false)</code>,
  * to put the variable back into a false condition (thereby forcing
  * threads to wait for the condition to become true, again).
- *
- * @include c:/etc/license.txt
+ * <p>
+ * {@code @include} c:/etc/license.txt
  */
 
 public class ConditionVariable {
@@ -34,7 +34,8 @@ public class ConditionVariable {
     }
 
     public synchronized void set(boolean how) {
-        if ((isTrue = how) == true) {
+        isTrue = how;
+        if (isTrue) {
             notifyAll();
         }
     }

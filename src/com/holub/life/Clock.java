@@ -1,6 +1,5 @@
 package com.holub.life;
 
-import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
@@ -23,8 +22,8 @@ import com.holub.tools.Publisher;
  * 				that caused the running game to overwrite any
  * 				displayed menus. See {@link #menuIsActive} for
  * 				details.
- *
- * @include /etc/license.txt
+ * <p>
+ * {@code @include} /etc/license.txt
  */
 
 public class Clock {
@@ -93,30 +92,28 @@ public class Clock {
         // First set up a single listener that will handle all the
         // menu-selection events except "Exit"
 
-        ActionListener modifier = new ActionListener() { //{=startSetup}
-            public void actionPerformed(ActionEvent e) {
-                String name = ((JMenuItem) e.getSource()).getName();
-                char toDo = name.charAt(0);
+        ActionListener modifier = e -> { //{=startSetup}
+            String name = ((JMenuItem) e.getSource()).getName();
+            char toDo = name.charAt(0);
 
-                if (toDo == 'T') {
-                    tick();                      // single tick
-                } else {
-                    startTicking(
-                            toDo == 'A' ? 500 :     // agonizing
-                                    toDo == 'S' ? 150 :     // slow
-                                            toDo == 'M' ? 70 :      // medium
-                                                    toDo == 'F' ? 30 : 0    // fast / halt
-                    );
-                }
+            if (toDo == 'T') {
+                tick();                      // single tick
+            } else {
+                startTicking(
+                        toDo == 'A' ? 500 :     // agonizing
+                                toDo == 'S' ? 150 :     // slow
+                                        toDo == 'M' ? 70 :      // medium
+                                                toDo == 'F' ? 30 : 0    // fast / halt
+                );
             }
         };
         // {=midSetup}
-        MenuSite.addLine(this, "Go", "Halt", modifier);
-        MenuSite.addLine(this, "Go", "Tick (Single Step)", modifier);
-        MenuSite.addLine(this, "Go", "Agonizing", modifier);
-        MenuSite.addLine(this, "Go", "Slow", modifier);
-        MenuSite.addLine(this, "Go", "Medium", modifier);
-        MenuSite.addLine(this, "Go", "Fast", modifier); // {=endSetup}
+        MenuSite.addLine(this, false, "Go", "Halt", modifier);
+        MenuSite.addLine(this, false, "Go", "Tick (Single Step)", modifier);
+        MenuSite.addLine(this, false, "Go", "Agonizing", modifier);
+        MenuSite.addLine(this, false, "Go", "Slow", modifier);
+        MenuSite.addLine(this, false, "Go", "Medium", modifier);
+        MenuSite.addLine(this, false, "Go", "Fast", modifier); // {=endSetup}
     }    //{=endCreateMenus}
 
     private Publisher publisher = new Publisher();
@@ -152,11 +149,9 @@ public class Clock {
      * stopped. (Life uses this for single stepping.)
      */
     public void tick() {
-        publisher.publish(new Publisher.Distributor() {
-            public void deliverTo(Object subscriber) {
-                if (!menuIsActive())
-                    ((Listener) subscriber).tick();
-            }
+        publisher.publish(subscriber -> {
+            if (!menuIsActive())
+                ((Listener) subscriber).tick();
         });
     }
 
