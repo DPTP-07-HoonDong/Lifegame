@@ -28,7 +28,6 @@ public interface Cell {
 			Cell southeast, Cell southwest
 	);
 
-<<<<<<< HEAD
 	/**
 	 * Access a specific contained cell located at the edge of the
 	 * composite cell.
@@ -38,15 +37,6 @@ public interface Cell {
 	 * @param column The requested column. Must be on the edge
 	 *               of the block.
 	 * @return true    if the state changed.
-=======
-	/** Access a specific contained cell located at the edge of the
-	 *  composite cell.
-	 *  @param row 		The requested row. Must be on the edge of
-	 *  				the block.
-	 *  @param column	The requested column. Must be on the edge
-	 *  				of the block.
-	 *  @return	true	if the state changed.
->>>>>>> f995eb8439bebe85a4ea277a3cd681e95ca2e1c3
 	 */
 	Cell edge(int row, int column);
 
