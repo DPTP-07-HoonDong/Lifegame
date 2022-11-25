@@ -1,5 +1,5 @@
 package com.holub.life;
 
-public interface RuleBehavior {
+public interface NextBehavior {
     public void setRule();
 }
