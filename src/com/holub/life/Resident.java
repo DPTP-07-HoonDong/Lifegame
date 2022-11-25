@@ -16,7 +16,6 @@ import com.holub.ui.Colors;
 
 public final class Resident implements Cell {
     private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
-
     private static final Color DEAD_COLOR = Colors.LIGHT_YELLOW;
 
 	private int amAlive = 0;
