@@ -342,8 +342,7 @@ public final class MenuSite {
 
         JMenu found = createSubmenuByName(requester, isPopupMenu, toThisMenu);
         if (found == null) {
-            throw new IllegalArgumentException(
-                    "addLine() can't find menu (" + toThisMenu + ")");
+            throw new IllegalArgumentException("addLine() can't find menu (" + toThisMenu + ")");
         }
 
         Item item = new Item(element, found, toThisMenu);
@@ -414,7 +413,7 @@ public final class MenuSite {
      *
      * @param select true to enable all the requester's menu items.
      */
-    public static void setSelected(Object requester, boolean isPopupMenu, boolean select) {
+    public static void setSelected(Object requester, boolean select) {
         assert requester != null;
         assert valid();
 
@@ -428,7 +427,7 @@ public final class MenuSite {
     }
 
     public static void showPopup(Object requester, Point here, List<Feature> cellFeatures) {
-        setSelected(requester, true, false);
+        setSelected(requester, false);
         for (Feature f: cellFeatures) {
             String[] menuName = f.getMenuName();
             getMyMenuItem(requester, menuName[0], menuName[1]).setSelected(true);
