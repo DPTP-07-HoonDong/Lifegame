@@ -75,10 +75,12 @@ public interface Cell {
 
 	List<Feature> getCellFeature(Point here, Rectangle surface);
 
-	/**
-	 * Return true if this cell or any subcells are alive.
-	 */
-	boolean isAlive();
+    void setCellFeature(Point here, Rectangle surface, Feature feature);
+
+    /**
+     * Return true if this cell or any subcells are alive.
+     */
+    boolean isAlive();
 
 	/**
 	 * Return the specified width plus the current cell's width
@@ -206,9 +208,14 @@ public interface Cell {
 			return null;
 		}
 
-		public void redraw(Graphics g, Rectangle here,
-						   boolean drawAll) {
-		}
+        @Override
+        public void setCellFeature(Point here, Rectangle surface, Feature feature) {
+
+        }
+
+        public void redraw(Graphics g, Rectangle here,
+                           boolean drawAll) {
+        }
 
 		public boolean transfer(Storable m, Point ul, boolean load) {
 			return false;

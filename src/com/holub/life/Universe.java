@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.*;
 
 import com.holub.io.Files;
+import com.holub.life.feature.Feature;
 import com.holub.ui.MenuSite;
 
 /**
@@ -21,6 +22,9 @@ import com.holub.ui.MenuSite;
 
 public class Universe extends JPanel {
     private final Cell outermostCell;
+
+    private static Point lastClickedPoint;
+
     private static final Universe theInstance = new Universe();
 
     /**
@@ -42,7 +46,8 @@ public class Universe extends JPanel {
     // The constructor is private so that the universe can be created
     // only by an outer-class method [Neighborhood.createUniverse()].
 
-    private Universe() {    // Create the nested Cells that comprise the "universe." A bug
+    private Universe() {
+        // Create the nested Cells that comprise the "universe." A bug
         // in the current implementation causes the program to fail
         // miserably if the overall size of the grid is too big to fit
         // on the screen.
@@ -84,16 +89,17 @@ public class Universe extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) { //{=Universe.mouse}
+                lastClickedPoint = e.getPoint();
                 Rectangle bounds = getBounds();
                 bounds.x = 0;
                 bounds.y = 0;
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    outermostCell.userClicked(e.getPoint(), bounds);
+                    outermostCell.userClicked(lastClickedPoint, bounds);
                     repaint();
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     MenuSite.showPopup(
                             Universe.instance(),
-                            e.getPoint(),
+                            lastClickedPoint,
                             outermostCell.getCellFeature(e.getPoint(), bounds)
                     );
                 }
@@ -109,14 +115,26 @@ public class Universe extends JPanel {
         );
 
         MenuSite.addLine(this, false, "Grid", "Load", e -> doLoad()); // {=Universe.load.setup}
-
         MenuSite.addLine(this, false, "Grid", "Store", e -> doStore());
-
         MenuSite.addLine(this, false, "Grid", "Exit", e -> System.exit(0));
 
-        MenuSite.addLine(this, true, "Dummy", "3", e -> {});
-        MenuSite.addLine(this, true, "Dummy", "2", e -> {});
-        MenuSite.addLine(this, true, "Dummy", "Default", e -> {});
+//        MenuSite.addLine(this, true, "Dummy", "Default", e -> setCellFeature(Feature.DUMMY));
+//        MenuSite.addLine(this, true, "Dummy", "Other", e -> setCellFeature(Feature.DUMMY_OTHER));
+
+        MenuSite.addLine(this, true, "TTL", "Default (1)", e -> {});
+        MenuSite.addLine(this, true, "TTL", "2", e -> {});
+        MenuSite.addLine(this, true, "TTL", "3", e -> {});
+        MenuSite.addLine(this, true, "TTL", "Infinite", e -> {});
+
+        MenuSite.addLine(this, true, "Rule", "Default (3 / 2-3)", e -> {});
+        MenuSite.addLine(this, true, "Rule", "Gnarl (1 / 1)", e -> {});
+        MenuSite.addLine(this, true, "Rule", "34Life (3-4 / 3-4)", e -> {});
+        MenuSite.addLine(this, true, "Rule", "Stains (3,6-8 / 2-3,5-8)", e -> {});
+
+        MenuSite.addLine(this, true, "Color", "Default (Red)", e -> {});
+        MenuSite.addLine(this, true, "Color", "Green", e -> {});
+        MenuSite.addLine(this, true, "Color", "Blue", e -> {});
+        MenuSite.addLine(this, true, "Color", "Black", e -> {});
 
         Clock.instance().addClockListener(() -> { //{=Universe.clock.subscribe}
             if (outermostCell.figureNextState(
@@ -185,6 +203,13 @@ public class Universe extends JPanel {
                     JOptionPane.ERROR_MESSAGE
             );
         }
+    }
+
+    public void setCellFeature(Feature feature) {
+        Rectangle bounds = getBounds();
+        bounds.x = 0;
+        bounds.y = 0;
+        outermostCell.setCellFeature(lastClickedPoint, bounds, feature);
     }
 
     /**
