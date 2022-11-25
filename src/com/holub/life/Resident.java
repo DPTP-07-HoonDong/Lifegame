@@ -4,9 +4,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.holub.life.feature.Feature;
-import com.holub.ui.Colors;    // Contains constants specifying various
-// colors not defined in java.awt.Color.
+import com.holub.life.feature.*;
+import com.holub.ui.Colors;
 
 /*** ****************************************************************
  * The Resident class implements a single cell---a "resident" of a
@@ -16,19 +15,38 @@ import com.holub.ui.Colors;    // Contains constants specifying various
  */
 
 public final class Resident implements Cell {
-//    TTLFeature ttlFeature;
-//    ColorFeature colorFeature;
-
     private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
-    private static final Color LIVE_COLOR = Color.RED;
     private static final Color DEAD_COLOR = Colors.LIGHT_YELLOW;
 
-    private boolean amAlive = false;
-    private boolean willBeAlive = false;
+	private int amAlive = 0;
+	private boolean willBeAlive	= false;
+
+	TTLBehavior ttlBehavior;
+	RuleBehavior ruleBehavior;
+	ColorBehavior colorBehavior;
+
+	Resident(TTLBehavior ttlBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
+		this.ttlBehavior = ttlBehavior;
+		this.ruleBehavior = ruleBehavior;
+		this.colorBehavior = colorBehavior;
+	}
 
     private boolean isStable() {
-        return amAlive == willBeAlive;
+        return amAlive > 0 == willBeAlive;
     }
+
+	public void setTtlBehavior(TTLBehavior ttlBehavior) {
+		this.ttlBehavior = ttlBehavior;
+	}
+
+	public void setRuleBehavior(RuleBehavior nextBehavior) {
+		this.ruleBehavior = nextBehavior;
+	}
+
+	public void setColorBehavior(ColorBehavior colorBehavior) {
+		this.colorBehavior = colorBehavior;
+	}
+
 
     /**
      * figure the next state.
@@ -51,7 +69,7 @@ public final class Resident implements Cell {
         verify(southeast, "southeast");
         verify(southwest, "southwest");
 
-        int neighbors = 0;
+		int neighbors = 0;
 
         if (north.isAlive()) ++neighbors;
         if (south.isAlive()) ++neighbors;
@@ -62,9 +80,16 @@ public final class Resident implements Cell {
         if (southeast.isAlive()) ++neighbors;
         if (southwest.isAlive()) ++neighbors;
 
-        willBeAlive = (neighbors == 3 || (amAlive && neighbors == 2));
-        return !isStable();
-    }
+		willBeAlive = (neighbors == 3 || (amAlive > 0 && neighbors == 2));  // rule 변경 필요
+
+        if (amAlive > 0) {
+            if (amAlive < 4) {
+                amAlive--;
+            }
+            return true;
+        }
+		return !isStable();
+	}
 
     private void verify(Cell c, String direction) {
         assert (c instanceof Resident) || (c == Cell.DUMMY)
@@ -83,13 +108,18 @@ public final class Resident implements Cell {
 
     public boolean transition() {
         boolean changed = isStable();
-        amAlive = willBeAlive;
+        if (willBeAlive) {
+            amAlive = ttlBehavior.getTimeToLive();
+        }
+        else {
+            amAlive = 0;
+        }
         return changed;
     }
 
     public void redraw(Graphics g, Rectangle here, boolean drawAll) {
         g = g.create();
-        g.setColor(amAlive ? LIVE_COLOR : DEAD_COLOR);
+        g.setColor(amAlive > 0 ? colorBehavior.getLiveColor() : DEAD_COLOR);
         g.fillRect(here.x + 1, here.y + 1, here.width - 1, here.height - 1);
 
         // Doesn't draw a line on the far right and bottom of the
@@ -103,29 +133,30 @@ public final class Resident implements Cell {
     }
 
     public void userClicked(Point here, Rectangle surface) {
-        amAlive = !amAlive;
+		amAlive = (amAlive > 0 ? 0 : ttlBehavior.getTimeToLive());
     }
 
     @Override
     public List<Feature> getCellFeature(Point here, Rectangle surface) {
         List<Feature> features = new ArrayList<>();
-        features.add(Feature.DUMMY);
-//        features.add(ttlFeature);
-//        features.add(colorFeature);
-
+//        features.add(Feature.DUMMY);
+        features.add(ttlBehavior);
+        features.add(ruleBehavior);
+        features.add(colorBehavior);
         return features;
     }
 
     public void clear() {
-        amAlive = willBeAlive = false;
+		amAlive = 0;
+		willBeAlive = false;
     }
 
     public boolean isAlive() {
-        return amAlive;
+        return amAlive > 0;
     }
 
     public Cell create() {
-        return new Resident();
+        return new Resident(ttlBehavior, ruleBehavior, colorBehavior);
     }
 
     public int widthInCells() {
@@ -139,9 +170,15 @@ public final class Resident implements Cell {
     public boolean transfer(Storable blob, Point upperLeft, boolean doLoad) {
         Memento memento = (Memento) blob;
         if (doLoad) {
-            amAlive = willBeAlive = memento.isAlive(upperLeft);
-            return amAlive;
-        } else if (amAlive) {                   // store only live cells
+            willBeAlive = memento.isAlive(upperLeft);
+            if (willBeAlive) {
+                amAlive = ttlBehavior.getTimeToLive();
+            }
+            else {
+                amAlive = 0;
+            }
+            return amAlive > 0;
+        } else if (amAlive > 0) {                   // store only live cells
             memento.markAsAlive(upperLeft);
         }
         return false;
