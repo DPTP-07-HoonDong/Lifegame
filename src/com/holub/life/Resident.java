@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.holub.life.feature.Feature;
+import com.holub.life.feature.*;
 import com.holub.ui.Colors;
 
 /*** ****************************************************************
@@ -15,15 +15,12 @@ import com.holub.ui.Colors;
  */
 
 public final class Resident implements Cell {
-//    TTLFeature ttlFeature;
-//    ColorFeature colorFeature;
-
     private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
 
     private static final Color DEAD_COLOR = Colors.LIGHT_YELLOW;
 
-    private boolean amAlive = false;
-    private boolean willBeAlive = false;
+	private int amAlive 	= 0;
+	private boolean willBeAlive	= false;
 
 	TTLBehavior ttlBehavior;
 	EffectBehavior effectBehavior;
@@ -38,7 +35,7 @@ public final class Resident implements Cell {
 	}
 
     private boolean isStable() {
-        return amAlive == willBeAlive;
+        return amAlive > 0 == willBeAlive;
     }
 
 	public void setTtlBehavior(TTLBehavior ttlBehavior) {
@@ -79,7 +76,9 @@ public final class Resident implements Cell {
         verify(southeast, "southeast");
         verify(southwest, "southwest");
 
-        int neighbors = 0;
+		ttlBehavior.getWillBeAlive(); // Default
+
+		int neighbors = 0;
 
         if (north.isAlive()) ++neighbors;
         if (south.isAlive()) ++neighbors;
@@ -90,9 +89,9 @@ public final class Resident implements Cell {
         if (southeast.isAlive()) ++neighbors;
         if (southwest.isAlive()) ++neighbors;
 
-        willBeAlive = (neighbors == 3 || (amAlive && neighbors == 2));
-        return !isStable();
-    }
+		willBeAlive = (neighbors == 3 || (amAlive > 0 && neighbors == 2));
+		return !isStable();
+	}
 
     private void verify(Cell c, String direction) {
         assert (c instanceof Resident) || (c == Cell.DUMMY)
@@ -117,7 +116,7 @@ public final class Resident implements Cell {
 
     public void redraw(Graphics g, Rectangle here, boolean drawAll) {
         g = g.create();
-        g.setColor(amAlive ? colorBehavior.setLiveColor() : DEAD_COLOR);
+        g.setColor(amAlive > 0 ? colorBehavior.getLiveColor() : DEAD_COLOR);
         g.fillRect(here.x + 1, here.y + 1, here.width - 1, here.height - 1);
 
         // Doesn't draw a line on the far right and bottom of the
@@ -131,25 +130,27 @@ public final class Resident implements Cell {
     }
 
     public void userClicked(Point here, Rectangle surface) {
-        amAlive = !amAlive;
+		amAlive = (amAlive > 0 ? 0 : ttlBehavior.getTtl());
     }
 
     @Override
     public List<Feature> getCellFeature(Point here, Rectangle surface) {
         List<Feature> features = new ArrayList<>();
         features.add(Feature.DUMMY);
-//        features.add(ttlFeature);
-//        features.add(colorFeature);
-
+        features.add(ttlBehavior);
+        features.add(effectBehavior);
+        features.add()
+        features.add(colorBehavior);
         return features;
     }
 
     public void clear() {
-        amAlive = willBeAlive = false;
+		amAlive = 0;
+		willBeAlive = false;
     }
 
     public boolean isAlive() {
-        return amAlive;
+        return amAlive > 0;
     }
 
     public Cell create() {
