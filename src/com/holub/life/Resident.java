@@ -19,7 +19,7 @@ public final class Resident implements Cell {
 
     private static final Color DEAD_COLOR = Colors.LIGHT_YELLOW;
 
-	private int amAlive 	= 0;
+	private int amAlive = 0;
 	private boolean willBeAlive	= false;
 
 	TTLBehavior ttlBehavior;
@@ -70,8 +70,6 @@ public final class Resident implements Cell {
         verify(southeast, "southeast");
         verify(southwest, "southwest");
 
-		ttlBehavior.getWillBeAlive(); // Default
-
 		int neighbors = 0;
 
         if (north.isAlive()) ++neighbors;
@@ -83,7 +81,14 @@ public final class Resident implements Cell {
         if (southeast.isAlive()) ++neighbors;
         if (southwest.isAlive()) ++neighbors;
 
-		willBeAlive = (neighbors == 3 || (amAlive > 0 && neighbors == 2));
+		willBeAlive = (neighbors == 3 || (amAlive > 0 && neighbors == 2));  // rule 변경 필요
+
+        if (amAlive > 0) {
+            if (amAlive < 4) {
+                amAlive--;
+            }
+            return true;
+        }
 		return !isStable();
 	}
 
@@ -135,7 +140,7 @@ public final class Resident implements Cell {
     @Override
     public List<Feature> getCellFeature(Point here, Rectangle surface) {
         List<Feature> features = new ArrayList<>();
-        features.add(Feature.DUMMY);
+//        features.add(Feature.DUMMY);
         features.add(ttlBehavior);
         features.add(ruleBehavior);
         features.add(colorBehavior);
