@@ -96,4 +96,6 @@ public interface Colors {
     Color LIGHT_PURPLE = new Color(0xcc, 0x99, 0xff);
     /*** RGB=(0xcc, 0x00, 0xff); <span style="background-color:#cc00ff;">&nbsp;&nbsp;&nbsp;</span> */
     Color PURPLE = MEDIUM_PURPLE;
+    /*** RGB=(0x00, 0x00, 0x00); <span style="background-color:#000000;">&nbsp;&nbsp;&nbsp;</span> */
+    Color BLACK = new Color(0x00, 0x00, 0x00);
 }

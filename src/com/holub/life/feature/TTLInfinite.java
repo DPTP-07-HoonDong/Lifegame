@@ -3,7 +3,7 @@ package com.holub.life.feature;
 public class TTLInfinite implements TTLBehavior {
     @Override
     public String[] getMenuName() {
-        return new String[0];
+        return new String[]{"TTL", "Infinite"};
     }
 
     @Override

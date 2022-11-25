@@ -4,14 +4,14 @@ import com.holub.ui.Colors;
 
 import java.awt.*;
 
-public class ColorRed implements ColorBehavior {
+public class ColorBlack implements ColorBehavior {
     @Override
     public Color getLiveColor() {
-        return Colors.MEDIUM_RED;
+        return Colors.BLACK;
     }
 
     @Override
     public String[] getMenuName() {
-        return new String[]{"Color", "Red"};
+        return new String[]{"Color", "Black"};
     }
 }
