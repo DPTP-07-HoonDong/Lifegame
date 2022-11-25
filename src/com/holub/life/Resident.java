@@ -16,6 +16,9 @@ import com.holub.ui.Colors;    // Contains constants specifying various
  */
 
 public final class Resident implements Cell {
+//    TTLFeature ttlFeature;
+//    ColorFeature colorFeature;
+
     private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
     private static final Color LIVE_COLOR = Color.RED;
     private static final Color DEAD_COLOR = Colors.LIGHT_YELLOW;
@@ -105,9 +108,12 @@ public final class Resident implements Cell {
 
     @Override
     public List<Feature> getCellFeature(Point here, Rectangle surface) {
-        List<Feature> DUMMYS = new ArrayList<>();
-        DUMMYS.add(Feature.DUMMY);
-        return DUMMYS;
+        List<Feature> features = new ArrayList<>();
+        features.add(Feature.DUMMY);
+//        features.add(ttlFeature);
+//        features.add(colorFeature);
+
+        return features;
     }
 
     public void clear() {
