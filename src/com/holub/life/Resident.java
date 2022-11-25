@@ -24,13 +24,13 @@ public final class Resident implements Cell {
 
 	TTLBehavior ttlBehavior;
 	EffectBehavior effectBehavior;
-	NextBehavior nextBehavior;
+	RuleBehavior ruleBehavior;
 	ColorBehavior colorBehavior;
 
-	Resident(TTLBehavior ttlBehavior, EffectBehavior effectBehavior, NextBehavior nextBehavior, ColorBehavior colorBehavior) {
+	Resident(TTLBehavior ttlBehavior, EffectBehavior effectBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
 		this.ttlBehavior = ttlBehavior;
 		this.effectBehavior = effectBehavior;
-		this.nextBehavior = nextBehavior;
+		this.ruleBehavior = ruleBehavior;
 		this.colorBehavior = colorBehavior;
 	}
 
@@ -130,7 +130,7 @@ public final class Resident implements Cell {
     }
 
     public void userClicked(Point here, Rectangle surface) {
-		amAlive = (amAlive > 0 ? 0 : ttlBehavior.getTtl());
+		amAlive = (amAlive > 0 ? 0 : ttlBehavior.getTimeToLive());
     }
 
     @Override
@@ -139,7 +139,7 @@ public final class Resident implements Cell {
         features.add(Feature.DUMMY);
         features.add(ttlBehavior);
         features.add(effectBehavior);
-        features.add()
+        features.add(ruleBehavior);
         features.add(colorBehavior);
         return features;
     }
@@ -154,7 +154,7 @@ public final class Resident implements Cell {
     }
 
     public Cell create() {
-        return new Resident(ttlBehavior, effectBehavior, nextBehavior, colorBehavior);
+        return new Resident(ttlBehavior, effectBehavior, ruleBehavior, colorBehavior);
     }
 
     public int widthInCells() {
@@ -169,8 +169,8 @@ public final class Resident implements Cell {
         Memento memento = (Memento) blob;
         if (doLoad) {
             amAlive = willBeAlive = memento.isAlive(upperLeft);
-            return amAlive;
-        } else if (amAlive) {                   // store only live cells
+            return amAlive > 0;
+        } else if (amAlive > 0) {                   // store only live cells
             memento.markAsAlive(upperLeft);
         }
         return false;

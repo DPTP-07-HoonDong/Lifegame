@@ -1,5 +1,5 @@
 package com.holub.life.feature;
 
-public interface EffectBehavior {
+public interface EffectBehavior extends Feature {
     public void setEffect();
 }

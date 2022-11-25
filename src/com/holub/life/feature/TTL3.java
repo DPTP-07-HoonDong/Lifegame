@@ -1,6 +1,6 @@
 package com.holub.life.feature;
 
-public class TTLInfinite implements TTLBehavior {
+public class TTL3 implements TTLBehavior {
     @Override
     public String[] getMenuName() {
         return new String[0];
@@ -8,6 +8,6 @@ public class TTLInfinite implements TTLBehavior {
 
     @Override
     public int getTimeToLive() {
-        return 4;
+        return 3;
     }
 }

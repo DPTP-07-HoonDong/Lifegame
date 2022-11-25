@@ -1,5 +1,5 @@
 package com.holub.life.feature;
 
-public interface TTLBehavior {
-    public void setTimeToLive();
+public interface TTLBehavior extends Feature {
+    public int getTimeToLive();
 }

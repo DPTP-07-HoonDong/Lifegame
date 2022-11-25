@@ -5,15 +5,13 @@ import com.holub.ui.Colors;
 import java.awt.*;
 
 public class ColorBlue implements ColorBehavior {
-    private Color LIVE_COLOR;
-
     @Override
     public Color getLiveColor() {
-        return LIVE_COLOR;
+        return Colors.MEDIUM_BLUE;
     }
 
     @Override
-    public void setLiveColor() {
-        LIVE_COLOR = Colors.MEDIUM_BLUE;
+    public String[] getMenuName() {
+        return new String[0];
     }
 }
