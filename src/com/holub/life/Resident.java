@@ -23,13 +23,11 @@ public final class Resident implements Cell {
 	private boolean willBeAlive	= false;
 
 	TTLBehavior ttlBehavior;
-	EffectBehavior effectBehavior;
 	RuleBehavior ruleBehavior;
 	ColorBehavior colorBehavior;
 
-	Resident(TTLBehavior ttlBehavior, EffectBehavior effectBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
+	Resident(TTLBehavior ttlBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
 		this.ttlBehavior = ttlBehavior;
-		this.effectBehavior = effectBehavior;
 		this.ruleBehavior = ruleBehavior;
 		this.colorBehavior = colorBehavior;
 	}
@@ -42,12 +40,8 @@ public final class Resident implements Cell {
 		this.ttlBehavior = ttlBehavior;
 	}
 
-	public void setEffectBehavior(EffectBehavior effectBehavior) {
-		this.effectBehavior = effectBehavior;
-	}
-
-	public void setNextBehavior(NextBehavior nextBehavior) {
-		this.nextBehavior = nextBehavior;
+	public void setRuleBehavior(RuleBehavior nextBehavior) {
+		this.ruleBehavior = nextBehavior;
 	}
 
 	public void setColorBehavior(ColorBehavior colorBehavior) {
@@ -110,7 +104,12 @@ public final class Resident implements Cell {
 
     public boolean transition() {
         boolean changed = isStable();
-        amAlive = willBeAlive;
+        if (willBeAlive) {
+            amAlive = ttlBehavior.getTimeToLive();
+        }
+        else {
+            amAlive = 0;
+        }
         return changed;
     }
 
@@ -138,7 +137,6 @@ public final class Resident implements Cell {
         List<Feature> features = new ArrayList<>();
         features.add(Feature.DUMMY);
         features.add(ttlBehavior);
-        features.add(effectBehavior);
         features.add(ruleBehavior);
         features.add(colorBehavior);
         return features;
@@ -154,7 +152,7 @@ public final class Resident implements Cell {
     }
 
     public Cell create() {
-        return new Resident(ttlBehavior, effectBehavior, ruleBehavior, colorBehavior);
+        return new Resident(ttlBehavior, ruleBehavior, colorBehavior);
     }
 
     public int widthInCells() {
@@ -168,7 +166,13 @@ public final class Resident implements Cell {
     public boolean transfer(Storable blob, Point upperLeft, boolean doLoad) {
         Memento memento = (Memento) blob;
         if (doLoad) {
-            amAlive = willBeAlive = memento.isAlive(upperLeft);
+            willBeAlive = memento.isAlive(upperLeft);
+            if (willBeAlive) {
+                amAlive = ttlBehavior.getTimeToLive();
+            }
+            else {
+                amAlive = 0;
+            }
             return amAlive > 0;
         } else if (amAlive > 0) {                   // store only live cells
             memento.markAsAlive(upperLeft);
