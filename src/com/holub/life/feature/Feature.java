@@ -13,4 +13,14 @@ public interface Feature {
             return new String[]{this.menuSpecifier, this.name};
         }
     };
+
+    Feature DUMMY_OTHER = new Feature() {
+        private final String menuSpecifier = "Dummy";
+        private final String name = "Other";
+
+        @Override
+        public String[] getMenuName() {
+            return new String[]{this.menuSpecifier, this.name};
+        }
+    };
 }

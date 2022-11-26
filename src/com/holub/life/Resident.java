@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.holub.life.feature.*;
+import com.holub.life.feature.color.ColorBehavior;
+import com.holub.life.feature.color.ColorRed;
+import com.holub.life.feature.rule.RuleBehavior;
+import com.holub.life.feature.ttl.TTLBehavior;
+import com.holub.life.feature.ttl.TTLDefault;
 import com.holub.ui.Colors;
 
 /*** ****************************************************************
@@ -15,6 +20,7 @@ import com.holub.ui.Colors;
  */
 
 public final class Resident implements Cell {
+    Feature dummyFeature = Feature.DUMMY;
     private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
     private static final Color DEAD_COLOR = Colors.LIGHT_YELLOW;
 
@@ -24,6 +30,12 @@ public final class Resident implements Cell {
 	TTLBehavior ttlBehavior;
 	RuleBehavior ruleBehavior;
 	ColorBehavior colorBehavior;
+
+    Resident() {
+        this.ttlBehavior = TTLDefault.getInstance();
+//        this.ruleBehavior = RuleDefault.getInstance();
+        this.colorBehavior = ColorRed.getInstance();
+    }
 
 	Resident(TTLBehavior ttlBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
 		this.ttlBehavior = ttlBehavior;
@@ -139,11 +151,23 @@ public final class Resident implements Cell {
     @Override
     public List<Feature> getCellFeature(Point here, Rectangle surface) {
         List<Feature> features = new ArrayList<>();
-//        features.add(Feature.DUMMY);
+//        features.add(dummyFeature);
         features.add(ttlBehavior);
-        features.add(ruleBehavior);
+//        features.add(ruleBehavior);
         features.add(colorBehavior);
         return features;
+    }
+
+    public void setCellFeature(Point here, Rectangle surface, Feature feature) {
+        if (feature instanceof TTLBehavior) {
+            ttlBehavior = (TTLBehavior) feature;
+//        } else if (feature instanceof RuleFeature) {
+//
+        } else if (feature instanceof ColorBehavior) {
+            colorBehavior = (ColorBehavior) feature;
+        } else {
+            dummyFeature = feature;
+        }
     }
 
     public void clear() {

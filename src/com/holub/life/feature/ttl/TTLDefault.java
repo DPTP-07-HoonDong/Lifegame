@@ -1,4 +1,4 @@
-package com.holub.life.feature;
+package com.holub.life.feature.ttl;
 
 public class TTLDefault implements TTLBehavior {
     private static TTLDefault ttlDefault = new TTLDefault();
@@ -13,7 +13,7 @@ public class TTLDefault implements TTLBehavior {
 
     @Override
     public String[] getMenuName() {
-        return new String[]{"TTL", "Default"};
+        return new String[]{"TTL", "Default (1)"};
     }
 
     @Override
