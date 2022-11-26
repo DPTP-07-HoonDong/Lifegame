@@ -153,7 +153,7 @@ public final class Resident implements Cell {
         List<Feature> features = new ArrayList<>();
 //        features.add(dummyFeature);
         features.add(ttlBehavior);
-        features.add(ruleBehavior);
+//        features.add(ruleBehavior);
         features.add(colorBehavior);
         return features;
     }
