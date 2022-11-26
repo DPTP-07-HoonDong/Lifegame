@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.holub.life.feature.*;
+import com.holub.life.feature.color.ColorBehavior;
+import com.holub.life.feature.color.ColorRed;
+import com.holub.life.feature.rule.RuleBehavior;
+import com.holub.life.feature.ttl.TTLBehavior;
+import com.holub.life.feature.ttl.TTLDefault;
 import com.holub.ui.Colors;
 
 /*** ****************************************************************
@@ -25,6 +30,12 @@ public final class Resident implements Cell {
 	TTLBehavior ttlBehavior;
 	RuleBehavior ruleBehavior;
 	ColorBehavior colorBehavior;
+
+    Resident() {
+        this.ttlBehavior = TTLDefault.getInstance();
+//        this.ruleBehavior = RuleDefault.getInstance();
+        this.colorBehavior = ColorRed.getInstance();
+    }
 
 	Resident(TTLBehavior ttlBehavior, RuleBehavior ruleBehavior, ColorBehavior colorBehavior) {
 		this.ttlBehavior = ttlBehavior;
