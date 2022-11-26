@@ -159,15 +159,15 @@ public final class Resident implements Cell {
     }
 
     public void setCellFeature(Point here, Rectangle surface, Feature feature) {
-//        if (feature instanceof TTLFeature) {
-//
+        if (feature instanceof TTLBehavior) {
+            ttlBehavior = (TTLBehavior) feature;
 //        } else if (feature instanceof RuleFeature) {
 //
-//        } else if (feature instanceof ColorFeature) {
-//
-//        } else {
+        } else if (feature instanceof ColorBehavior) {
+            colorBehavior = (ColorBehavior) feature;
+        } else {
             dummyFeature = feature;
-//        }
+        }
     }
 
     public void clear() {

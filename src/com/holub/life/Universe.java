@@ -8,6 +8,11 @@ import java.awt.event.*;
 
 import com.holub.io.Files;
 import com.holub.life.feature.Feature;
+import com.holub.life.feature.color.*;
+import com.holub.life.feature.ttl.TTL2;
+import com.holub.life.feature.ttl.TTL3;
+import com.holub.life.feature.ttl.TTLDefault;
+import com.holub.life.feature.ttl.TTLInfinite;
 import com.holub.ui.MenuSite;
 
 /**
@@ -121,20 +126,20 @@ public class Universe extends JPanel {
 //        MenuSite.addLine(this, true, "Dummy", "Default", e -> setCellFeature(Feature.DUMMY));
 //        MenuSite.addLine(this, true, "Dummy", "Other", e -> setCellFeature(Feature.DUMMY_OTHER));
 
-        MenuSite.addLine(this, true, "TTL", "Default (1)", e -> {});
-        MenuSite.addLine(this, true, "TTL", "2", e -> {});
-        MenuSite.addLine(this, true, "TTL", "3", e -> {});
-        MenuSite.addLine(this, true, "TTL", "Infinite", e -> {});
+        MenuSite.addLine(this, true, "TTL", "Default (1)", e -> setCellFeature(TTLDefault.getInstance()));
+        MenuSite.addLine(this, true, "TTL", "2", e -> setCellFeature(TTL2.getInstance()));
+        MenuSite.addLine(this, true, "TTL", "3", e -> setCellFeature(TTL3.getInstance()));
+        MenuSite.addLine(this, true, "TTL", "Infinite", e -> setCellFeature(TTLInfinite.getInstance()));
 
         MenuSite.addLine(this, true, "Rule", "Default (3 / 2-3)", e -> {});
         MenuSite.addLine(this, true, "Rule", "Gnarl (1 / 1)", e -> {});
         MenuSite.addLine(this, true, "Rule", "34Life (3-4 / 3-4)", e -> {});
         MenuSite.addLine(this, true, "Rule", "Stains (3,6-8 / 2-3,5-8)", e -> {});
 
-        MenuSite.addLine(this, true, "Color", "Default (Red)", e -> {});
-        MenuSite.addLine(this, true, "Color", "Green", e -> {});
-        MenuSite.addLine(this, true, "Color", "Blue", e -> {});
-        MenuSite.addLine(this, true, "Color", "Black", e -> {});
+        MenuSite.addLine(this, true, "Color", "Default (Red)", e -> setCellFeature(ColorRed.getInstance()));
+        MenuSite.addLine(this, true, "Color", "Green", e -> setCellFeature(ColorGreen.getInstance()));
+        MenuSite.addLine(this, true, "Color", "Blue", e -> setCellFeature(ColorBlue.getInstance()));
+        MenuSite.addLine(this, true, "Color", "Black", e -> setCellFeature(ColorBlack.getInstance()));
 
         Clock.instance().addClockListener(() -> { //{=Universe.clock.subscribe}
             if (outermostCell.figureNextState(
