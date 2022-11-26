@@ -22,6 +22,6 @@ public class ColorRed implements ColorBehavior {
 
     @Override
     public String[] getMenuName() {
-        return new String[]{"Color", "Red"};
+        return new String[]{"Color", "Default (Red)"};
     }
 }

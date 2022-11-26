@@ -13,7 +13,7 @@ public class TTLDefault implements TTLBehavior {
 
     @Override
     public String[] getMenuName() {
-        return new String[]{"TTL", "Default"};
+        return new String[]{"TTL", "Default (1)"};
     }
 
     @Override
