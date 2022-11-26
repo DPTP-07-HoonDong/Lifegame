@@ -1,4 +1,4 @@
-package com.holub.life.feature;
+package com.holub.life.feature.ttl;
 
 public class TTL2 implements TTLBehavior {
     private static TTL2 ttl2 = new TTL2();

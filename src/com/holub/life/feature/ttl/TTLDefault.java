@@ -1,4 +1,4 @@
-package com.holub.life.feature;
+package com.holub.life.feature.ttl;
 
 public class TTLDefault implements TTLBehavior {
     private static TTLDefault ttlDefault = new TTLDefault();
