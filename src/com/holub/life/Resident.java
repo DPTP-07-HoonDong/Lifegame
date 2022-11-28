@@ -49,7 +49,7 @@ public final class Resident implements Cell {
 
 	public void setTTLBehavior(TTLBehavior ttlBehavior) {
 		this.ttlBehavior = ttlBehavior;
-        this.amAlive = ttlBehavior.getTimeToLive();
+        this.amAlive = isAlive() ? ttlBehavior.getTimeToLive() : 0;
 	}
 
 	public void setRuleBehavior(RuleBehavior nextBehavior) {
@@ -146,7 +146,7 @@ public final class Resident implements Cell {
     }
 
     public void userClicked(Point here, Rectangle surface) {
-		amAlive = (amAlive > 0 ? 0 : ttlBehavior.getTimeToLive());
+		amAlive = isAlive() ? 0 : ttlBehavior.getTimeToLive();
     }
 
     @Override
