@@ -51,8 +51,9 @@ public final class Resident implements Cell {
         }
     }
 
-	public void setTtlBehavior(TTLBehavior ttlBehavior) {
+	public void setTTLBehavior(TTLBehavior ttlBehavior) {
 		this.ttlBehavior = ttlBehavior;
+        this.amAlive = isAlive() ? ttlBehavior.getTimeToLive() : 0;
 	}
 
 	public void setRuleBehavior(RuleBehavior nextBehavior) {
@@ -148,7 +149,7 @@ public final class Resident implements Cell {
     }
 
     public void userClicked(Point here, Rectangle surface) {
-		amAlive = amAlive > 0 ? 0 : ttlBehavior.getTimeToLive();
+		    amAlive = isAlive() ? 0 : ttlBehavior.getTimeToLive();
     }
 
     @Override
@@ -163,11 +164,11 @@ public final class Resident implements Cell {
 
     public void setCellFeature(Point here, Rectangle surface, Feature feature) {
         if (feature instanceof TTLBehavior) {
-            ttlBehavior = (TTLBehavior) feature;
+            setTTLBehavior((TTLBehavior) feature);
 //        } else if (feature instanceof RuleFeature) {
 //
         } else if (feature instanceof ColorBehavior) {
-            colorBehavior = (ColorBehavior) feature;
+            setColorBehavior((ColorBehavior) feature);
         } else {
             dummyFeature = feature;
         }
