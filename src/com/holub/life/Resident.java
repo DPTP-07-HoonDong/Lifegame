@@ -44,7 +44,11 @@ public final class Resident implements Cell {
 	}
 
     private boolean isStable() {
-        return amAlive > 0 == willBeAlive;
+        if (willBeAlive) {
+            return amAlive == 1 || amAlive == 4;
+        } else {
+            return amAlive == 0;
+        }
     }
 
 	public void setTtlBehavior(TTLBehavior ttlBehavior) {
