@@ -428,6 +428,20 @@ public final class Neighborhood implements Cell {
         return grid[row][column].getCellFeature(position, subcell); //{=Neighborhood.userClicked.call}
     }
 
+    @Override
+    public void setCellFeature(Point here, Rectangle surface, Feature feature) {
+        int pixelsPerCell = surface.width / gridSize;
+        int row = here.y / pixelsPerCell;
+        int column = here.x / pixelsPerCell;
+        int rowOffset = here.y % pixelsPerCell;
+        int columnOffset = here.x % pixelsPerCell;
+
+        Point position = new Point(columnOffset, rowOffset);
+        Rectangle subcell = new Rectangle(0, 0, pixelsPerCell, pixelsPerCell);
+
+        grid[row][column].setCellFeature(position, subcell, feature); //{=Neighborhood.userClicked.call}
+    }
+
     public boolean isAlive() {
         return true;
     }

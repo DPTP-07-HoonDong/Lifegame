@@ -1,4 +1,4 @@
-package com.holub.life.feature;
+package com.holub.life.feature.color;
 
 import com.holub.ui.Colors;
 

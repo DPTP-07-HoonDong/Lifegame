@@ -1,4 +1,6 @@
-package com.holub.life.feature;
+package com.holub.life.feature.color;
+
+import com.holub.life.feature.Feature;
 
 import java.awt.*;
 
