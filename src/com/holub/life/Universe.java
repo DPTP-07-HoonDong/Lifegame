@@ -215,6 +215,7 @@ public class Universe extends JPanel {
         bounds.x = 0;
         bounds.y = 0;
         outermostCell.setCellFeature(lastClickedPoint, bounds, feature);
+        refreshNow();
     }
 
     /**
