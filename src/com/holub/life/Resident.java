@@ -119,12 +119,14 @@ public final class Resident implements Cell {
     public boolean transition() {
         boolean changed = isStable();
         if (willBeAlive) {
-            if (amAlive == 0) {
+            if (amAlive < 1) {
                 amAlive = ttlBehavior.getTimeToLive();
+            } else if (amAlive < 4) {
+                amAlive--;
             }
         } else {
-            if (amAlive == 1) {
-                amAlive = 0;
+            if (amAlive > 0 && amAlive < 4) {
+                amAlive--;
             }
         }
         return changed;
