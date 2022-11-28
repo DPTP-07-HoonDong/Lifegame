@@ -44,7 +44,11 @@ public final class Resident implements Cell {
 	}
 
     private boolean isStable() {
-        return amAlive > 0 == willBeAlive;
+        if (willBeAlive) {
+            return amAlive == 1 || amAlive == 4;
+        } else {
+            return amAlive == 0;
+        }
     }
 
 	public void setTTLBehavior(TTLBehavior ttlBehavior) {
@@ -93,14 +97,8 @@ public final class Resident implements Cell {
         if (southeast.isAlive()) ++neighbors;
         if (southwest.isAlive()) ++neighbors;
 
-		willBeAlive = (neighbors == 3 || (amAlive > 0 && neighbors == 2));  // rule 변경 필요
+		willBeAlive = amAlive > 1 || (neighbors == 3 || (amAlive == 1 && neighbors == 2));  // rule 변경 필요
 
-        if (amAlive > 0) {
-            if (amAlive < 4) {
-                amAlive--;
-            }
-            return true;
-        }
 		return !isStable();
 	}
 
@@ -122,10 +120,15 @@ public final class Resident implements Cell {
     public boolean transition() {
         boolean changed = isStable();
         if (willBeAlive) {
-            amAlive = ttlBehavior.getTimeToLive();
-        }
-        else {
-            amAlive = 0;
+            if (amAlive < 1) {
+                amAlive = ttlBehavior.getTimeToLive();
+            } else if (amAlive < 4) {
+                amAlive--;
+            }
+        } else {
+            if (amAlive > 0 && amAlive < 4) {
+                amAlive--;
+            }
         }
         return changed;
     }
@@ -146,7 +149,7 @@ public final class Resident implements Cell {
     }
 
     public void userClicked(Point here, Rectangle surface) {
-		amAlive = isAlive() ? 0 : ttlBehavior.getTimeToLive();
+		    amAlive = isAlive() ? 0 : ttlBehavior.getTimeToLive();
     }
 
     @Override
@@ -196,12 +199,7 @@ public final class Resident implements Cell {
         Memento memento = (Memento) blob;
         if (doLoad) {
             willBeAlive = memento.isAlive(upperLeft);
-            if (willBeAlive) {
-                amAlive = ttlBehavior.getTimeToLive();
-            }
-            else {
-                amAlive = 0;
-            }
+            amAlive = willBeAlive ? ttlBehavior.getTimeToLive() : 0;
             return amAlive > 0;
         } else if (amAlive > 0) {                   // store only live cells
             memento.markAsAlive(upperLeft);
