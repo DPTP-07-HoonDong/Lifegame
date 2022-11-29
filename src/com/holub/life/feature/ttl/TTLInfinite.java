@@ -1,6 +1,6 @@
 package com.holub.life.feature.ttl;
 
-public class TTLInfinite implements TTLBehavior {
+public class TTLInfinite extends TTLBehavior {
     private static TTLInfinite ttlInfinite = new TTLInfinite();
 
     private TTLInfinite() {

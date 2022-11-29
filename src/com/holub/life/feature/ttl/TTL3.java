@@ -1,6 +1,6 @@
 package com.holub.life.feature.ttl;
 
-public class TTL3 implements TTLBehavior {
+public class TTL3 extends TTLBehavior {
     private static TTL3 ttl3 = new TTL3();
 
     private TTL3() {

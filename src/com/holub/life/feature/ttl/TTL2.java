@@ -1,6 +1,8 @@
 package com.holub.life.feature.ttl;
 
-public class TTL2 implements TTLBehavior {
+import com.holub.life.Resident;
+
+public class TTL2 extends TTLBehavior {
     private static TTL2 ttl2 = new TTL2();
 
     private TTL2() {
@@ -20,4 +22,5 @@ public class TTL2 implements TTLBehavior {
     public int getTimeToLive() {
         return 2;
     }
+
 }
