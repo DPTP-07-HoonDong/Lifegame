@@ -9,6 +9,7 @@ import java.awt.event.*;
 import com.holub.io.Files;
 import com.holub.life.feature.Feature;
 import com.holub.life.feature.color.*;
+import com.holub.life.feature.rule.*;
 import com.holub.life.feature.ttl.TTL2;
 import com.holub.life.feature.ttl.TTL3;
 import com.holub.life.feature.ttl.TTLDefault;
@@ -131,10 +132,10 @@ public class Universe extends JPanel {
         MenuSite.addLine(this, true, "TTL", "3", e -> setCellFeature(TTL3.getInstance()));
         MenuSite.addLine(this, true, "TTL", "Infinite", e -> setCellFeature(TTLInfinite.getInstance()));
 
-        MenuSite.addLine(this, true, "Rule", "Default (3 / 2-3)", e -> {});
-        MenuSite.addLine(this, true, "Rule", "Gnarl (1 / 1)", e -> {});
-        MenuSite.addLine(this, true, "Rule", "34Life (3-4 / 3-4)", e -> {});
-        MenuSite.addLine(this, true, "Rule", "Stains (3,6-8 / 2-3,5-8)", e -> {});
+        MenuSite.addLine(this, true, "Rule", "Default (3 / 2-3)", e -> setCellFeature(RuleDefault.getInstance()));
+        MenuSite.addLine(this, true, "Rule", "Gnarl (1 / 1)", e -> setCellFeature(RuleGnarl.getInstance()));
+        MenuSite.addLine(this, true, "Rule", "34Life (3-4 / 3-4)", e -> setCellFeature(Rule34Life.getInstance()));
+        MenuSite.addLine(this, true, "Rule", "Stains (3,6-8 / 2-3,5-8)", e -> setCellFeature(RuleStains.getInstance()));
 
         MenuSite.addLine(this, true, "Color", "Default (Red)", e -> setCellFeature(ColorRed.getInstance()));
         MenuSite.addLine(this, true, "Color", "Green", e -> setCellFeature(ColorGreen.getInstance()));

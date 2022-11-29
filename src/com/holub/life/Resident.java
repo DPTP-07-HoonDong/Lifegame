@@ -8,6 +8,7 @@ import com.holub.life.feature.*;
 import com.holub.life.feature.color.ColorBehavior;
 import com.holub.life.feature.color.ColorRed;
 import com.holub.life.feature.rule.RuleBehavior;
+import com.holub.life.feature.rule.RuleDefault;
 import com.holub.life.feature.ttl.TTLBehavior;
 import com.holub.life.feature.ttl.TTLDefault;
 import com.holub.ui.Colors;
@@ -33,7 +34,7 @@ public final class Resident implements Cell {
 
     Resident() {
         this.ttlBehavior = TTLDefault.getInstance();
-//        this.ruleBehavior = RuleDefault.getInstance();
+        this.ruleBehavior = RuleDefault.getInstance();
         this.colorBehavior = ColorRed.getInstance();
     }
 
@@ -97,7 +98,7 @@ public final class Resident implements Cell {
         if (southeast.isAlive()) ++neighbors;
         if (southwest.isAlive()) ++neighbors;
 
-		willBeAlive = amAlive > 1 || (neighbors == 3 || (amAlive == 1 && neighbors == 2));  // rule 변경 필요
+		willBeAlive = amAlive > 1 || ruleBehavior.getNextState(neighbors, amAlive);
 
 		return !isStable();
 	}
@@ -157,7 +158,7 @@ public final class Resident implements Cell {
         List<Feature> features = new ArrayList<>();
 //        features.add(dummyFeature);
         features.add(ttlBehavior);
-//        features.add(ruleBehavior);
+        features.add(ruleBehavior);
         features.add(colorBehavior);
         return features;
     }
@@ -165,8 +166,8 @@ public final class Resident implements Cell {
     public void setCellFeature(Point here, Rectangle surface, Feature feature) {
         if (feature instanceof TTLBehavior) {
             setTTLBehavior((TTLBehavior) feature);
-//        } else if (feature instanceof RuleFeature) {
-//
+        } else if (feature instanceof RuleBehavior) {
+            setRuleBehavior((RuleBehavior) feature);
         } else if (feature instanceof ColorBehavior) {
             setColorBehavior((ColorBehavior) feature);
         } else {

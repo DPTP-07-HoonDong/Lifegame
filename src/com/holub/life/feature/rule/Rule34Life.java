@@ -13,7 +13,7 @@ public class Rule34Life implements RuleBehavior {
 
     @Override
     public String[] getMenuName() {
-        return new String[]{"Rule", "34Life (3-4/3-4)"};
+        return new String[]{"Rule", "34Life (3-4 / 3-4)"};
     }
 
     @Override

@@ -13,7 +13,7 @@ public class RuleGnarl implements RuleBehavior {
 
     @Override
     public String[] getMenuName() {
-        return new String[]{"Rule", "Gnarl (1/1)"};
+        return new String[]{"Rule", "Gnarl (1 / 1)"};
     }
 
     @Override

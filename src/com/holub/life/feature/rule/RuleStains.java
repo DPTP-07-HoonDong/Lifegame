@@ -13,7 +13,7 @@ public class RuleStains implements RuleBehavior {
 
     @Override
     public String[] getMenuName() {
-        return new String[]{"Rule", "Stains (3,6-8/2-3,5-8)"};
+        return new String[]{"Rule", "Stains (3,6-8 / 2-3,5-8)"};
     }
 
     @Override
