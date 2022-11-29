@@ -17,7 +17,7 @@ public class RuleDefault implements RuleBehavior {
     }
 
     @Override
-    public int[] getRule() {
-        return new int[0];
+    public boolean getNextState(int neighbors, int amAlive) {
+        return neighbors == 3 || (amAlive == 1 && neighbors == 2);
     }
 }

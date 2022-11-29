@@ -17,7 +17,7 @@ public class RuleStains implements RuleBehavior {
     }
 
     @Override
-    public int[] getRule() {
-        return new int[0];
+    public boolean getNextState(int neighbors, int amAlive) {
+        return (neighbors == 3 || (neighbors > 5 && neighbors < 9)) || (amAlive == 1 && (neighbors == 2 || neighbors == 5));
     }
 }

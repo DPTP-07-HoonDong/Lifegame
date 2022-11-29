@@ -17,7 +17,7 @@ public class RuleGnarl implements RuleBehavior {
     }
 
     @Override
-    public int[] getRule() {
-        return new int[0];
+    public boolean getNextState(int neighbors, int amAlive) {
+        return neighbors == 1;
     }
 }
