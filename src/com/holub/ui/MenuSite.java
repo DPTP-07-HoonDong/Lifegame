@@ -818,8 +818,8 @@ public final class MenuSite {
         public Item(Component item, MenuElement parent,
                     String parentSpecification) {
             assert parent != null;
-            assert parent instanceof JMenu || parent instanceof JMenuBar
-                    : "Parent must be JMenu or JMenuBar";
+            assert parent instanceof JMenu || parent instanceof JMenuBar || parent instanceof JPopupMenu
+                    : "Parent must be JMenu or JMenuBar or JPopupMenu";
 
             this.item = item;
             this.parent = parent;
