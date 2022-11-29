@@ -1,6 +1,6 @@
 package com.holub.life.feature.rule;
 
-public class Rule34Life implements RuleBehavior {
+public class Rule34Life extends RuleBehavior {
     private static Rule34Life rule34Life = new Rule34Life();
 
     private Rule34Life() {

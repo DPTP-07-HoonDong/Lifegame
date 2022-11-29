@@ -21,7 +21,6 @@ import com.holub.ui.Colors;
  */
 
 public final class Resident implements Cell {
-    Feature dummyFeature = Feature.DUMMY;
     private static final Color BORDER_COLOR = Colors.DARK_YELLOW;
     private static final Color DEAD_COLOR = Colors.LIGHT_YELLOW;
 
@@ -121,7 +120,7 @@ public final class Resident implements Cell {
     public boolean transition() {
         boolean changed = isStable();
         if (willBeAlive) {
-            if (amAlive < 1) {
+            if (amAlive < 2) {
                 amAlive = ttlBehavior.getTimeToLive();
             } else if (amAlive < 4) {
                 amAlive--;
@@ -156,7 +155,6 @@ public final class Resident implements Cell {
     @Override
     public List<Feature> getCellFeature(Point here, Rectangle surface) {
         List<Feature> features = new ArrayList<>();
-//        features.add(dummyFeature);
         features.add(ttlBehavior);
         features.add(ruleBehavior);
         features.add(colorBehavior);
@@ -164,15 +162,7 @@ public final class Resident implements Cell {
     }
 
     public void setCellFeature(Point here, Rectangle surface, Feature feature) {
-        if (feature instanceof TTLBehavior) {
-            setTTLBehavior((TTLBehavior) feature);
-        } else if (feature instanceof RuleBehavior) {
-            setRuleBehavior((RuleBehavior) feature);
-        } else if (feature instanceof ColorBehavior) {
-            setColorBehavior((ColorBehavior) feature);
-        } else {
-            dummyFeature = feature;
-        }
+        feature.setFeature(this);
     }
 
     public void clear() {

@@ -1,6 +1,6 @@
 package com.holub.life.feature.rule;
 
-public class RuleGnarl implements RuleBehavior {
+public class RuleGnarl extends RuleBehavior {
     private static RuleGnarl ruleGnarl = new RuleGnarl();
 
     private RuleGnarl() {

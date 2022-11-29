@@ -4,7 +4,7 @@ import com.holub.ui.Colors;
 
 import java.awt.*;
 
-public class ColorGreen implements ColorBehavior {
+public class ColorGreen extends ColorBehavior {
     private static ColorGreen colorGreen = new ColorGreen();
 
     private ColorGreen() {

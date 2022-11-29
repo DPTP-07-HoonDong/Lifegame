@@ -1,6 +1,6 @@
 package com.holub.life.feature.rule;
 
-public class RuleStains implements RuleBehavior {
+public class RuleStains extends RuleBehavior {
     private static RuleStains ruleStains = new RuleStains();
 
     private RuleStains() {

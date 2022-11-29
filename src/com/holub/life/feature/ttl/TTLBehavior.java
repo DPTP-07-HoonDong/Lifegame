@@ -1,7 +1,13 @@
 package com.holub.life.feature.ttl;
 
+import com.holub.life.Resident;
 import com.holub.life.feature.Feature;
 
-public interface TTLBehavior extends Feature {
-    int getTimeToLive();
+public abstract class TTLBehavior implements Feature {
+    public abstract int getTimeToLive();
+
+    @Override
+    public void setFeature(Resident cell) {
+        cell.setTTLBehavior(this);
+    }
 }
