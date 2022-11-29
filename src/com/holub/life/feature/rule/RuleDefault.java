@@ -13,7 +13,7 @@ public class RuleDefault implements RuleBehavior {
 
     @Override
     public String[] getMenuName() {
-        return new String[0];
+        return new String[]{"Rule", "Default (3/2-3)"};
     }
 
     @Override
