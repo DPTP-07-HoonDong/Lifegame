@@ -152,14 +152,20 @@ class NeighborhoodTest extends JFrame {
     @Test
     void gnarlRuleTest() {
 
+        List<Boolean> actual = new ArrayList<>();
+        List<Boolean> expected = new ArrayList<>();
+
         // Given
-        Point p1 = new Point(364, 366);
-        Point p2 = new Point(371, 364);
-        Point p3 = new Point(356, 367);
-        Point p4 = new Point(365, 358);
-        Point p5 = new Point(365, 374);
-        Point p6 = new Point(380, 367);
-        Point p7 = new Point(371, 374);
+        List<Point> points = new ArrayList<>();
+        Point p0 = new Point(364, 367);
+        points.add(new Point(356, 358));
+        points.add(new Point(364, 358));
+        points.add(new Point(372, 358));
+        points.add(new Point(356, 367));
+        points.add(new Point(372, 367));
+        points.add(new Point(356, 375));
+        points.add(new Point(364, 375));
+        points.add(new Point(372, 375));
 
         try {
             // Given
@@ -167,63 +173,65 @@ class NeighborhoodTest extends JFrame {
             field.setAccessible(true);
 
             Cell outermostcell = (Cell) field.get(Universe.instance());
-            outermostcell.userClicked(p1, r1);
-            outermostcell.userClicked(p2, r1);
-            outermostcell.userClicked(p6, r1);
-
             Rectangle bounds = getBounds();
             bounds.x = 0;
             bounds.y = 0;
-            outermostcell.setCellFeature(p1, bounds, RuleGnarl.getInstance());
-            outermostcell.setCellFeature(p2, bounds, RuleDefault.getInstance());
-            outermostcell.setCellFeature(p3, bounds, RuleGnarl.getInstance());
-            outermostcell.setCellFeature(p4, bounds, RuleDefault.getInstance());
-            outermostcell.setCellFeature(p5, bounds, RuleGnarl.getInstance());
-            outermostcell.setCellFeature(p6, bounds, RuleDefault.getInstance());
-            outermostcell.setCellFeature(p7, bounds, RuleDefault.getInstance());
 
-            Field field2 = outermostcell.getClass().getDeclaredField("grid");
-            field2.setAccessible(true);
-            Cell[][] grid = (Cell[][]) field2.get(outermostcell);
+            for (int i = 1; i < 9; i++) {
 
-            Field field3 = grid[5][5].getClass().getDeclaredField("grid");
-            field3.setAccessible(true);
-            Cell[][] grid2 = (Cell[][]) field3.get(grid[5][5]);
+                Field field2 = outermostcell.getClass().getDeclaredField("grid");
+                field2.setAccessible(true);
+                Cell[][] grid = (Cell[][]) field2.get(outermostcell);
 
-            // When
-            for (int i = 0; i < 1; i++) {
-                if (outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
-                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY)) {
-                    outermostcell.transition();
+                Field field3 = grid[5][5].getClass().getDeclaredField("grid");
+                field3.setAccessible(true);
+                Cell[][] grid2 = (Cell[][]) field3.get(grid[5][5]);
+                outermostcell.setCellFeature(p0, bounds, RuleGnarl.getInstance());
+
+                if (i == 1) {
+                    expected.add(true);
+                    expected.add(true);
+                } else {
+                    expected.add(false);
+                    expected.add(false);
                 }
+
+                Collections.shuffle(points);
+
+                // When
+                // Target Cell(p0) is not alive
+                for (int j = 0; j < i; j++) {
+                    outermostcell.userClicked(points.get(j), r1);
+                    outermostcell.setCellFeature(points.get(j), bounds, RuleDefault.getInstance());
+                }
+                outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+                outermostcell.transition();
+                actual.add(grid2[5][5].isAlive());
+
+                outermostcell.clear();
+
+                // Target Cell(p0) is alive
+                outermostcell.userClicked(p0, r1);
+                for (int j = 0; j < i; j++) {
+                    outermostcell.userClicked(points.get(j), r1);
+                    outermostcell.setCellFeature(points.get(j), bounds, RuleDefault.getInstance());
+                }
+                outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+                outermostcell.transition();
+                actual.add(grid2[5][5].isAlive());
+
+                outermostcell.clear();
             }
-
-            List<Boolean> actual = new ArrayList<>();
-            actual.add(grid2[5][5].isAlive());
-            actual.add(grid2[5][6].isAlive());
-            actual.add(grid2[5][4].isAlive());
-            actual.add(grid2[4][5].isAlive());
-            actual.add(grid2[6][5].isAlive());
-            actual.add(grid2[5][7].isAlive());
-            actual.add(grid2[6][6].isAlive());
-
-            List<Boolean> expected = new ArrayList<>();
-            expected.add(true);
-            expected.add(true);
-            expected.add(true);
-            expected.add(false);
-            expected.add(false);
-            expected.add(false);
-            expected.add(true);
-
-            // Then
-            assertEquals(actual, expected);
-
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+
+        // Then
+        assertEquals(actual, expected);
     }
 
     @DisplayName("3-4 Rule Test")
