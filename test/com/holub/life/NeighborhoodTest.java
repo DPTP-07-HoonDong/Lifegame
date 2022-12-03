@@ -1,8 +1,7 @@
 package com.holub.life;
 
 import com.holub.life.feature.Feature;
-import com.holub.life.feature.color.ColorBehavior;
-import com.holub.life.feature.color.ColorGreen;
+import com.holub.life.feature.color.*;
 import com.holub.life.feature.ttl.TTL2;
 import com.holub.life.feature.ttl.TTL3;
 import com.holub.life.feature.ttl.TTLInfinite;
@@ -88,16 +87,16 @@ class NeighborhoodTest extends JFrame {
             bounds.x = 0;
             bounds.y = 0;
 
+            Field field2 = outermostcell.getClass().getDeclaredField("grid");
+            field2.setAccessible(true);
+            Cell[][] grid = (Cell[][]) field2.get(outermostcell);
+
+            Field field3 = grid[4][4].getClass().getDeclaredField("grid");
+            field3.setAccessible(true);
+            Cell[][] grid2 = (Cell[][]) field3.get(grid[4][4]);
+            outermostcell.setCellFeature(p0, bounds, RuleDefault.getInstance());
+
             for (int i = 1; i < 9; i++) {
-
-                Field field2 = outermostcell.getClass().getDeclaredField("grid");
-                field2.setAccessible(true);
-                Cell[][] grid = (Cell[][]) field2.get(outermostcell);
-
-                Field field3 = grid[4][4].getClass().getDeclaredField("grid");
-                field3.setAccessible(true);
-                Cell[][] grid2 = (Cell[][]) field3.get(grid[4][4]);
-                outermostcell.setCellFeature(p0, bounds, RuleDefault.getInstance());
 
                 if (i == 3) {
                     expected.add(true);
@@ -138,9 +137,7 @@ class NeighborhoodTest extends JFrame {
 
                 outermostcell.clear();
             }
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
@@ -177,16 +174,16 @@ class NeighborhoodTest extends JFrame {
             bounds.x = 0;
             bounds.y = 0;
 
+            Field field2 = outermostcell.getClass().getDeclaredField("grid");
+            field2.setAccessible(true);
+            Cell[][] grid = (Cell[][]) field2.get(outermostcell);
+
+            Field field3 = grid[5][5].getClass().getDeclaredField("grid");
+            field3.setAccessible(true);
+            Cell[][] grid2 = (Cell[][]) field3.get(grid[5][5]);
+            outermostcell.setCellFeature(p0, bounds, RuleGnarl.getInstance());
+
             for (int i = 1; i < 9; i++) {
-
-                Field field2 = outermostcell.getClass().getDeclaredField("grid");
-                field2.setAccessible(true);
-                Cell[][] grid = (Cell[][]) field2.get(outermostcell);
-
-                Field field3 = grid[5][5].getClass().getDeclaredField("grid");
-                field3.setAccessible(true);
-                Cell[][] grid2 = (Cell[][]) field3.get(grid[5][5]);
-                outermostcell.setCellFeature(p0, bounds, RuleGnarl.getInstance());
 
                 if (i == 1) {
                     expected.add(true);
@@ -224,9 +221,7 @@ class NeighborhoodTest extends JFrame {
 
                 outermostcell.clear();
             }
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
@@ -238,17 +233,20 @@ class NeighborhoodTest extends JFrame {
     @Test
     void threefourRuleTest() {
 
+        List<Boolean> actual = new ArrayList<>();
+        List<Boolean> expected = new ArrayList<>();
+
         // Given
-        Point p1 = new Point(436, 437);
-        Point p2 = new Point(443, 437);
-        Point p3 = new Point(428, 438);
-        Point p4 = new Point(443, 430);
-        Point p5 = new Point(437, 431);
-        Point p6 = new Point(429, 431);
-        Point p7 = new Point(420, 430);
-        Point p8 = new Point(443, 422);
-        Point p9 = new Point(437, 423);
-        Point p0 = new Point(428, 423);
+        List<Point> points = new ArrayList<>();
+        Point p0 = new Point(436, 439);
+        points.add(new Point(428, 431));
+        points.add(new Point(436, 431));
+        points.add(new Point(444, 431));
+        points.add(new Point(428, 439));
+        points.add(new Point(444, 439));
+        points.add(new Point(428, 447));
+        points.add(new Point(436, 447));
+        points.add(new Point(444, 447));
 
         try {
             // Given
@@ -256,26 +254,9 @@ class NeighborhoodTest extends JFrame {
             field.setAccessible(true);
 
             Cell outermostcell = (Cell) field.get(Universe.instance());
-            outermostcell.userClicked(p1, r1);
-            outermostcell.userClicked(p4, r1);
-            outermostcell.userClicked(p5, r1);
-            outermostcell.userClicked(p6, r1);
-            outermostcell.userClicked(p7, r1);
-            outermostcell.userClicked(p9, r1);
-
             Rectangle bounds = getBounds();
             bounds.x = 0;
             bounds.y = 0;
-            outermostcell.setCellFeature(p1, bounds, Rule34Life.getInstance());
-            outermostcell.setCellFeature(p2, bounds, Rule34Life.getInstance());
-            outermostcell.setCellFeature(p3, bounds, Rule34Life.getInstance());
-            outermostcell.setCellFeature(p4, bounds, RuleDefault.getInstance());
-            outermostcell.setCellFeature(p5, bounds, RuleDefault.getInstance());
-            outermostcell.setCellFeature(p6, bounds, Rule34Life.getInstance());
-            outermostcell.setCellFeature(p7, bounds, RuleDefault.getInstance());
-            outermostcell.setCellFeature(p8, bounds, RuleDefault.getInstance());
-            outermostcell.setCellFeature(p9, bounds, RuleDefault.getInstance());
-            outermostcell.setCellFeature(p0, bounds, RuleDefault.getInstance());
 
             Field field2 = outermostcell.getClass().getDeclaredField("grid");
             field2.setAccessible(true);
@@ -284,47 +265,52 @@ class NeighborhoodTest extends JFrame {
             Field field3 = grid[6][6].getClass().getDeclaredField("grid");
             field3.setAccessible(true);
             Cell[][] grid2 = (Cell[][]) field3.get(grid[6][6]);
+            outermostcell.setCellFeature(p0, bounds, Rule34Life.getInstance());
 
-            // When
-            for (int i = 0; i < 1; i++) {
-                if (outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
-                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY)) {
-                    outermostcell.transition();
+            for (int i = 1; i < 9; i++) {
+
+                if (i == 3 || i == 4) {
+                    expected.add(true);
+                    expected.add(true);
+                } else {
+                    expected.add(false);
+                    expected.add(false);
                 }
+
+                Collections.shuffle(points);
+
+                // When
+                // Target Cell(p0) is not alive
+                for (int j = 0; j < i; j++) {
+                    outermostcell.userClicked(points.get(j), r1);
+                    outermostcell.setCellFeature(points.get(j), bounds, RuleDefault.getInstance());
+                }
+                outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+                outermostcell.transition();
+                actual.add(grid2[6][6].isAlive());
+
+                outermostcell.clear();
+
+                // Target Cell(p0) is alive
+                outermostcell.userClicked(p0, r1);
+                for (int j = 0; j < i; j++) {
+                    outermostcell.userClicked(points.get(j), r1);
+                    outermostcell.setCellFeature(points.get(j), bounds, RuleDefault.getInstance());
+                }
+                outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+                outermostcell.transition();
+                actual.add(grid2[6][6].isAlive());
+
+                outermostcell.clear();
             }
-
-            List<Boolean> actual = new ArrayList<>();
-            actual.add(grid2[6][6].isAlive());
-            actual.add(grid2[6][7].isAlive());
-            actual.add(grid2[6][5].isAlive());
-            actual.add(grid2[5][7].isAlive());
-            actual.add(grid2[5][6].isAlive());
-            actual.add(grid2[5][5].isAlive());
-            actual.add(grid2[5][4].isAlive());
-            actual.add(grid2[4][7].isAlive());
-            actual.add(grid2[4][6].isAlive());
-            actual.add(grid2[4][5].isAlive());
-
-            List<Boolean> expected = new ArrayList<>();
-            expected.add(true);
-            expected.add(true);
-            expected.add(true);
-            expected.add(true);
-            expected.add(false);
-            expected.add(true);
-            expected.add(false);
-            expected.add(true);
-            expected.add(true);
-            expected.add(false);
-
-            // Then
-            assertEquals(actual, expected);
-
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+
+        // Then
+        assertEquals(actual, expected);
     }
 
     @DisplayName("Stains Rule Test")
@@ -356,15 +342,16 @@ class NeighborhoodTest extends JFrame {
             bounds.x = 0;
             bounds.y = 0;
 
-            for (int i = 1; i < 9; i++) {
-                Field field2 = outermostcell.getClass().getDeclaredField("grid");
-                field2.setAccessible(true);
-                Cell[][] grid = (Cell[][]) field2.get(outermostcell);
+            Field field2 = outermostcell.getClass().getDeclaredField("grid");
+            field2.setAccessible(true);
+            Cell[][] grid = (Cell[][]) field2.get(outermostcell);
 
-                Field field3 = grid[5][2].getClass().getDeclaredField("grid");
-                field3.setAccessible(true);
-                Cell[][] grid2 = (Cell[][]) field3.get(grid[5][2]);
-                outermostcell.setCellFeature(p0, bounds, RuleStains.getInstance());
+            Field field3 = grid[5][2].getClass().getDeclaredField("grid");
+            field3.setAccessible(true);
+            Cell[][] grid2 = (Cell[][]) field3.get(grid[5][2]);
+            outermostcell.setCellFeature(p0, bounds, RuleStains.getInstance());
+
+            for (int i = 1; i < 9; i++) {
 
                 if (i == 1 || i == 4) {
                     expected.add(false);
@@ -405,9 +392,7 @@ class NeighborhoodTest extends JFrame {
 
                 outermostcell.clear();
             }
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
@@ -457,9 +442,7 @@ class NeighborhoodTest extends JFrame {
             // Then
             assertEquals(actual, expected);
 
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
@@ -507,9 +490,7 @@ class NeighborhoodTest extends JFrame {
             // Then
             assertEquals(actual, expected);
 
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -556,9 +537,7 @@ class NeighborhoodTest extends JFrame {
             // Then
             assertEquals(actual, expected);
 
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -609,11 +588,10 @@ class NeighborhoodTest extends JFrame {
             // Then
             assertEquals(actual, expected);
 
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+
     }
 
 
