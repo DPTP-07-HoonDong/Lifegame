@@ -97,7 +97,7 @@ class NeighborhoodTest extends JFrame {
             Cell[][] grid2 = (Cell[][]) field3.get(grid[4][4]);
             outermostcell.setCellFeature(p0, bounds, RuleDefault.getInstance());
 
-            for (int i = 1; i < 9; i++) {
+            for (int i = 0; i < 9; i++) {
 
                 if (i == 3) {
                     expected.add(true);
@@ -184,7 +184,7 @@ class NeighborhoodTest extends JFrame {
             Cell[][] grid2 = (Cell[][]) field3.get(grid[5][5]);
             outermostcell.setCellFeature(p0, bounds, RuleGnarl.getInstance());
 
-            for (int i = 1; i < 9; i++) {
+            for (int i = 0; i < 9; i++) {
 
                 if (i == 1) {
                     expected.add(true);
@@ -268,7 +268,7 @@ class NeighborhoodTest extends JFrame {
             Cell[][] grid2 = (Cell[][]) field3.get(grid[6][6]);
             outermostcell.setCellFeature(p0, bounds, Rule34Life.getInstance());
 
-            for (int i = 1; i < 9; i++) {
+            for (int i = 0; i < 9; i++) {
 
                 if (i == 3 || i == 4) {
                     expected.add(true);
@@ -352,9 +352,9 @@ class NeighborhoodTest extends JFrame {
             Cell[][] grid2 = (Cell[][]) field3.get(grid[5][2]);
             outermostcell.setCellFeature(p0, bounds, RuleStains.getInstance());
 
-            for (int i = 1; i < 9; i++) {
+            for (int i = 0; i < 9; i++) {
 
-                if (i == 1 || i == 4) {
+                if (i == 0 || i == 1 || i == 4) {
                     expected.add(false);
                     expected.add(false);
                 } else if (i == 2 || i == 5) {
