@@ -546,10 +546,28 @@ class NeighborhoodTest extends JFrame {
     @Test
     void getCellFeature() {
 
+        List<Color> actual = new ArrayList<>();
+        List<Color> expected = new ArrayList<>();
+
+        expected.add(Colors.MEDIUM_RED);
+        expected.add(Colors.GREEN);
+        expected.add(Colors.MEDIUM_BLUE);
+        expected.add(Colors.BLACK);
+        expected.add(Colors.MEDIUM_RED);
+        expected.add(Colors.GREEN);
+        expected.add(Colors.MEDIUM_BLUE);
+        expected.add(Colors.BLACK);
+
         // Given
-        Point p1 = new Point(221, 222);
-        Point p2 = new Point(228, 222);
-        Point p3 = new Point(215, 222);
+        List<Point> points = new ArrayList<>();
+        points.add(new Point(215, 222));
+        points.add(new Point(221, 222));
+        points.add(new Point(215, 230));
+        points.add(new Point(221, 230));
+        points.add(new Point(228, 222));
+        points.add(new Point(235, 222));
+        points.add(new Point(228, 230));
+        points.add(new Point(235, 230));
 
         try {
             // Given
@@ -557,31 +575,41 @@ class NeighborhoodTest extends JFrame {
             field.setAccessible(true);
 
             Cell outermostcell = (Cell) field.get(Universe.instance());
-            outermostcell.userClicked(p1, r1);
-            outermostcell.userClicked(p2, r1);
-            outermostcell.userClicked(p3, r1);
+
+            for (int i = 0; i < 4; i++) {
+                outermostcell.userClicked(points.get(i), r1);
+            }
 
             Rectangle bounds = getBounds();
             bounds.x = 0;
             bounds.y = 0;
-            outermostcell.setCellFeature(p3, bounds, ColorGreen.getInstance());
+
+            outermostcell.setCellFeature(points.get(0), bounds, ColorRed.getInstance());
+            outermostcell.setCellFeature(points.get(1), bounds, ColorGreen.getInstance());
+            outermostcell.setCellFeature(points.get(2), bounds, ColorBlue.getInstance());
+            outermostcell.setCellFeature(points.get(3), bounds, ColorBlack.getInstance());
+            outermostcell.setCellFeature(points.get(4), bounds, ColorRed.getInstance());
+            outermostcell.setCellFeature(points.get(5), bounds, ColorGreen.getInstance());
+            outermostcell.setCellFeature(points.get(6), bounds, ColorBlue.getInstance());
+            outermostcell.setCellFeature(points.get(7), bounds, ColorBlack.getInstance());
 
             // When
-            for (int i = 0; i < 3; i++) {
-                if (outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
-                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY)) {
-                    outermostcell.transition();
-                }
+            outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                    Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+            outermostcell.transition();
+
+            for (int i = 4; i < 8; i++) {
+                outermostcell.userClicked(points.get(i), r1);
             }
 
-            List<Feature> features = new ArrayList<>();
-            Color expected = Colors.GREEN;
-            Color actual = null;
-            features = outermostcell.getCellFeature(p3, r1);
-            for (Feature f : features) {
-                if (f instanceof ColorBehavior) {
-                    actual = ((ColorBehavior) f).getLiveColor();
-                    break;
+            for (int i = 0; i < 8; i++) {
+                List<Feature> features = new ArrayList<>();
+                features = outermostcell.getCellFeature(points.get(i), r1);
+                for (Feature f : features) {
+                    if (f instanceof ColorBehavior) {
+                        actual.add(((ColorBehavior) f).getLiveColor());
+                        break;
+                    }
                 }
             }
 
