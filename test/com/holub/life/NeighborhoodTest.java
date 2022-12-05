@@ -4,6 +4,7 @@ import com.holub.life.feature.Feature;
 import com.holub.life.feature.color.*;
 import com.holub.life.feature.ttl.TTL2;
 import com.holub.life.feature.ttl.TTL3;
+import com.holub.life.feature.ttl.TTLDefault;
 import com.holub.life.feature.ttl.TTLInfinite;
 import com.holub.life.feature.rule.RuleDefault;
 import com.holub.life.feature.rule.RuleGnarl;
@@ -400,12 +401,62 @@ class NeighborhoodTest extends JFrame {
         assertEquals(actual, expected);
     }
 
+    @DisplayName("TTL Default Test")
+    @Test
+    void ttlDefaultTest() {
+
+        // Given
+        Point p1 = new Point(149, 223);
+
+        try {
+            // Given
+            Field field = Universe.instance().getClass().getDeclaredField("outermostCell");
+            field.setAccessible(true);
+
+            Cell outermostcell = (Cell) field.get(Universe.instance());
+            outermostcell.userClicked(p1, r1);
+
+            Rectangle bounds = getBounds();
+            bounds.x = 0;
+            bounds.y = 0;
+            outermostcell.setCellFeature(p1, bounds, TTLDefault.getInstance());
+
+            Field field2 = outermostcell.getClass().getDeclaredField("grid");
+            field2.setAccessible(true);
+            Cell[][] grid = (Cell[][]) field2.get(outermostcell);
+
+            Field field3 = grid[3][2].getClass().getDeclaredField("grid");
+            field3.setAccessible(true);
+            Cell[][] grid2 = (Cell[][]) field3.get(grid[3][2]);
+
+            // When
+            for (int i = 0; i < 1; i++) {
+                outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+                outermostcell.transition();
+            }
+
+            boolean actual = grid2[3][2].isAlive();
+            boolean expected = false;
+
+            // Then
+            assertEquals(actual, expected);
+
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @DisplayName("TTL 2 Test")
     @Test
     void ttl2Test() {
 
         // Given
         Point p1 = new Point(220, 151);
+        List<Boolean> actual = new ArrayList<>();
+        List<Boolean> expected = new ArrayList<>();
+        expected.add(true);
+        expected.add(false);
 
         try {
             // Given
@@ -429,15 +480,12 @@ class NeighborhoodTest extends JFrame {
             Cell[][] grid2 = (Cell[][]) field3.get(grid[2][3]);
 
             // When
-            for (int i = 0; i < 1; i++) {
-                if (outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
-                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY)) {
-                    outermostcell.transition();
-                }
+            for (int i = 0; i < 2; i++) {
+                outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+                outermostcell.transition();
+                actual.add(grid2[2][3].isAlive());
             }
-
-            boolean actual = grid2[2][3].isAlive();
-            boolean expected = true;
 
             // Then
             assertEquals(actual, expected);
@@ -454,6 +502,11 @@ class NeighborhoodTest extends JFrame {
 
         // Given
         Point p1 = new Point(150, 150);
+        List<Boolean> actual = new ArrayList<>();
+        List<Boolean> expected = new ArrayList<>();
+        expected.add(true);
+        expected.add(true);
+        expected.add(false);
 
         try {
             // Given
@@ -477,15 +530,12 @@ class NeighborhoodTest extends JFrame {
             Cell[][] grid2 = (Cell[][]) field3.get(grid[2][2]);
 
             // When
-            for (int i = 0; i < 2; i++) {
-                if (outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
-                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY)) {
-                    outermostcell.transition();
-                }
+            for (int i = 0; i < 3; i++) {
+                outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+                outermostcell.transition();
+                actual.add(grid2[2][2].isAlive());
             }
-
-            boolean actual = grid2[2][2].isAlive();
-            boolean expected = true;
 
             // Then
             assertEquals(actual, expected);
@@ -501,6 +551,14 @@ class NeighborhoodTest extends JFrame {
 
         // Given
         Point p1 = new Point(77, 77);
+        List<Boolean> actual = new ArrayList<>();
+        List<Boolean> expected = new ArrayList<>();
+        expected.add(true);
+        expected.add(true);
+        expected.add(true);
+        expected.add(true);
+        expected.add(true);
+        expected.add(true);
 
         try {
             // Given
@@ -525,14 +583,11 @@ class NeighborhoodTest extends JFrame {
 
             // When
             for (int i = 0; i < 6; i++) {
-                if (outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
-                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY)) {
-                    outermostcell.transition();
-                }
+                outermostcell.figureNextState(Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY,
+                        Cell.DUMMY, Cell.DUMMY, Cell.DUMMY, Cell.DUMMY);
+                outermostcell.transition();
+                actual.add(grid2[1][1].isAlive());
             }
-
-            boolean actual = grid2[1][1].isAlive();
-            boolean expected = true;
 
             // Then
             assertEquals(actual, expected);
